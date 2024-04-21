@@ -1,8 +1,11 @@
 using ScanImeiApp;
+using ScanImeiApp.Abstractions;
+using ScanImeiApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddTransient<IScanImeiTextService, ScanImeiTextService>();
 
 var app = builder.Build();
 

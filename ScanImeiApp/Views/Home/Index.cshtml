@@ -1,20 +1,20 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Главная";
 }
 
 <div class="container">
-    <h2>Upload Images</h2>
+    <h2>Загрузите изображения</h2>
     <input type="file" id="imageInput" multiple>
-    <button id="uploadButton" class="btn btn-primary">Upload</button>
+    <button id="uploadButton" class="btn btn-primary">Сканировать</button>
     <div id="result"></div>
 </div>
 
 <script>
     document.getElementById('uploadButton').addEventListener('click', function () {
-        var files = document.getElementById('imageInput').files;
+        let files = document.getElementById('imageInput').files;
         if (files.length > 0) {
-            var formData = new FormData();
-            for (var i = 0; i < files.length; i++) {
+            let formData = new FormData();
+            for (let i = 0; i < files.length; i++) {
                 formData.append('images', files[i]);
             }
 
@@ -25,11 +25,11 @@
             .then(response => response.json())
             .then(data => {
                 // Обработка результата
-                var resultElement = document.getElementById('result');
-                resultElement.innerHTML = '<h3>Result:</h3>';
-                var ul = document.createElement('ul');
+                let resultElement = document.getElementById('result');
+                resultElement.innerHTML = '<h3>Результат:</h3>';
+                let ul = document.createElement('ul');
                 data.forEach(function(item) {
-                    var li = document.createElement('li');
+                    let li = document.createElement('li');
                     li.textContent = item;
                     ul.appendChild(li);
                 });
@@ -37,7 +37,7 @@
             })
             .catch(error => {
                 // Обработка ошибки
-                document.getElementById('result').innerHTML = 'Error uploading images';
+                document.getElementById('result').innerHTML = 'Ошибка при обработки изображений.';
             });
         }
     });
