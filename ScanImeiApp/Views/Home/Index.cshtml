@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container">
+    <h2>Upload Images</h2>
+    <input type="file" id="imageInput" multiple>
+    <button id="uploadButton" class="btn btn-primary">Upload</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    document.getElementById('uploadButton').addEventListener('click', function () {
+        var files = document.getElementById('imageInput').files;
+        if (files.length > 0) {
+            var formData = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                formData.append('images', files[i]);
+            }
+
+            fetch('/Home/Upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Обработка результата
+                var resultElement = document.getElementById('result');
+                resultElement.innerHTML = '<h3>Result:</h3>';
+                var ul = document.createElement('ul');
+                data.forEach(function(item) {
+                    var li = document.createElement('li');
+                    li.textContent = item;
+                    ul.appendChild(li);
+                });
+                resultElement.appendChild(ul);
+            })
+            .catch(error => {
+                // Обработка ошибки
+                document.getElementById('result').innerHTML = 'Error uploading images';
+            });
+        }
+    });
+</script>

@@ -1,0 +1,6 @@
+﻿services:
+  scanimeiapp:
+    image: scanimeiapp
+    build:
+      context: .
+      dockerfile: ScanImeiApp/Dockerfile

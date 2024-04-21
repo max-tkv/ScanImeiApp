@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Tessdata\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Tesseract" Version="5.2.0" />
+      <PackageReference Include="TesseractOCR" Version="5.3.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="runtimes\x64\libleptonica-1.82.0.so" />
+      <AdditionalFiles Include="runtimes\x64\libleptonica-1.82.0.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="runtimes\x64\libtesseract50.so" />
+      <AdditionalFiles Include="runtimes\x64\libtesseract50.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+    </ItemGroup>
+
+</Project>
