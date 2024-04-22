@@ -10,5 +10,5 @@ public interface IScanImeiTextService
     /// </summary>
     /// <param name="memoryStreamImage">Изображение для сканирования.</param>
     /// <returns>IMEI</returns>
-    string GetImeiTextFromImage(MemoryStream memoryStreamImage);
+    List<string> GetImeiTextFromImage(MemoryStream memoryStreamImage);
 }

@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using ScanImeiApp.Abstractions;
 using ScanImeiApp.Exceptions;
@@ -33,11 +35,8 @@ public class HomeController : Controller
                 using var memoryStream = new MemoryStream();
                 await image.CopyToAsync(memoryStream);
 
-                var firstImei = scanImeiTextService.GetImeiTextFromImage(memoryStream);
-                result.Add($"IMEI1:{firstImei}");
-
-                // todo
-                result.Add($"IMEI2:{firstImei}");
+                var imeis = scanImeiTextService.GetImeiTextFromImage(memoryStream);
+                result.Add(JsonSerializer.Serialize(imeis));
             }
 
             return Json(result);

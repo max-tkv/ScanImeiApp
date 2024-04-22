@@ -12,10 +12,14 @@ public class ScanImeiTextService : IScanImeiTextService
 {
     private const string TesseractLanguageName = "eng";
     private const string TesseractTessdataPath = "tessdata";
-    private const string ImeiPattern = @"IMEI\s(\d{15})";
-    
+    private static readonly string[] ImeiPatterns =
+    {
+        @"IMEI\s(\d{15})",
+        @"IMEI:\s(\d{15})"
+    };
+
     /// <inheritdoc />
-    public string GetImeiTextFromImage(MemoryStream memoryStreamImage)
+    public List<string> GetImeiTextFromImage(MemoryStream memoryStreamImage)
     {
         var recognizedText = RecognizedTextFromImage(memoryStreamImage);
         return ExtractImeiFromText(recognizedText);
@@ -43,15 +47,24 @@ public class ScanImeiTextService : IScanImeiTextService
     /// <param name="recognizedText">Текст.</param>
     /// <returns>IMEI-строка</returns>
     /// <exception cref="NotFoundImeiException">Не удалось найти IMEI.</exception>
-    private static string ExtractImeiFromText(string recognizedText)
+    private static List<string> ExtractImeiFromText(string recognizedText)
     {
-        Regex regex = new Regex(ImeiPattern);
-        Match match = regex.Match(recognizedText);
-        if (match.Success)
+        var result = new List<string>();
+        foreach (var pattern in ImeiPatterns)
         {
-            return match.Groups[1].Value;
+            Regex regex = new Regex(pattern);
+            Match match = regex.Match(recognizedText);
+            if (match.Success)
+            {
+                result.Add(match.Groups[1].Value);
+            }
         }
 
+        if (result.Any())
+        {
+            return result;
+        }
+        
         throw new NotFoundImeiException();
     }
 }
