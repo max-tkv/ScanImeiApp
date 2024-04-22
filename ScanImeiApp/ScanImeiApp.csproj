@@ -19,6 +19,8 @@
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+      <None Remove="Views\Home\Index.cshtml.css" />
+      <Content Include="Views\Home\Index.cshtml.css" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,6 +28,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
       <PackageReference Include="Tesseract" Version="5.2.0" />
       <PackageReference Include="TesseractOCR" Version="5.3.5" />

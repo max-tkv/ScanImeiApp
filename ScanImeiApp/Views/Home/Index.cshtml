@@ -3,7 +3,6 @@
 }
 
 <div class="container">
-    <h2>Загрузите изображения</h2>
     <input type="file" id="imageInput" multiple>
     <button id="uploadButton" class="btn btn-primary">Сканировать</button>
     <div id="result"></div>
@@ -11,34 +10,58 @@
 
 <script>
     document.getElementById('uploadButton').addEventListener('click', function () {
+        document.getElementById('result').innerHTML = '';
+
         let files = document.getElementById('imageInput').files;
         if (files.length > 0) {
             let formData = new FormData();
             for (let i = 0; i < files.length; i++) {
                 formData.append('images', files[i]);
             }
+            
+            document.getElementById('result').innerHTML = `
+                <div class="alert alert-info" role="alert">
+                    <strong>Пожалуйста, подождите...</strong>
+                </div>`;
 
             fetch('/scan', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                // Обработка результата
-                let resultElement = document.getElementById('result');
-                resultElement.innerHTML = '<h3>Результат:</h3>';
-                let ul = document.createElement('ul');
-                data.forEach(function(item) {
-                    let li = document.createElement('li');
-                    li.textContent = item;
-                    ul.appendChild(li);
+                .then(response => response.json())
+                .then(data => {
+                    let resultElement = document.getElementById('result');
+                    resultElement.innerHTML = '<h4>Результат:</h4>';
+                    data.forEach(function(item) {
+                        let ul = document.createElement('ul');
+                        ul.classList.add('list-group');
+                        let li = document.createElement('li');
+                        li.textContent = 'Имя изображения: ' + item.imageName;
+                        li.classList.add('list-group-item', 'list-group-item-primary');
+                        ul.appendChild(li);
+                        if (item.imei.length > 0){
+                            item.imei.forEach(function(imei) {
+                                let liImei = document.createElement('li');
+                                liImei.textContent = 'IMEI: ' + imei;
+                                liImei.classList.add('list-group-item');
+                                ul.appendChild(liImei);
+                            });
+                        } else {
+                            let liImei = document.createElement('li');
+                            liImei.textContent = 'IMEI не найдены';
+                            liImei.classList.add('list-group-item');
+                            ul.appendChild(liImei);
+                        }
+                        resultElement.appendChild(ul);
+                    });
+                })
+                .catch(error => {
+                    // Отображение сообщения об ошибке
+                    document.getElementById('result').innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Ошибка!</strong> Произошла ошибка при обработке изображений.
+                    </div>`;
                 });
-                resultElement.appendChild(ul);
-            })
-            .catch(error => {
-                // Обработка ошибки
-                document.getElementById('result').innerHTML = 'Ошибка при обработки изображений.';
-            });
         }
     });
 </script>

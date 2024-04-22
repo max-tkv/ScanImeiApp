@@ -1,7 +1,7 @@
 namespace ScanImeiApp.Exceptions;
 
 /// <summary>
-/// todo
+/// Исключения для ошибки получения пустого списка паттернов.
 /// </summary>
 public class NotFoundPatternsException : Exception
 {

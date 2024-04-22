@@ -14,21 +14,24 @@ public class ScanImeiTextService : IScanImeiTextService
     private const string TesseractTessdataPath = "tessdata";
     private const string PatternsConfigurationKey = "Patterns";
     private readonly List<string> _imeiPatterns;
+    private readonly IImageService _imageService;
 
     /// <summary>
     /// .ctor
     /// </summary>
-    public ScanImeiTextService(IConfiguration configuration)
+    public ScanImeiTextService(IConfiguration configuration, IImageService imageService)
     {
         _imeiPatterns = configuration
             .GetRequiredSection(PatternsConfigurationKey)
             .Get<List<string>>() ?? throw new NotFoundPatternsException();
+        _imageService = imageService;
     }
 
     /// <inheritdoc />
     public List<string> GetImeiTextFromImage(MemoryStream memoryStreamImage)
     {
-        var recognizedText = RecognizedTextFromImage(memoryStreamImage);
+        MemoryStream adjustStreamImage = _imageService.AdjustContrast(memoryStreamImage, 50);
+        string recognizedText = RecognizedTextFromImage(adjustStreamImage);
         return ExtractImeiFromText(recognizedText);
     }
 
@@ -70,11 +73,6 @@ public class ScanImeiTextService : IScanImeiTextService
             }
         }
 
-        if (result.Any())
-        {
-            return result;
-        }
-        
-        throw new NotFoundImeiException();
+        return result.Distinct().ToList();
     }
 }

@@ -7,49 +7,37 @@ namespace ScanImeiApp.Filters;
 /// <summary>
 /// Фильтр обработки исключений.
 /// </summary>
-public class HandleExceptionsFilter : Attribute, IAsyncActionFilter
+public class HandleExceptionsFilter : ExceptionFilterAttribute
 {
-    private readonly ILogger<HandleExceptionsFilter> _logger;
-
-    /// <summary>
-    /// Конструктор фильтра обработки исключений.
-    /// </summary>
-    /// <param name="logger"></param>
-    public HandleExceptionsFilter(ILogger<HandleExceptionsFilter> logger)
-    {
-        _logger = logger;
-    }
-
     /// <inheritdoc />
-    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    public override void OnException(ExceptionContext context)
     {
-        try
+        if (context == null)
         {
-            await next();
+            throw new ArgumentNullException(nameof(context));
         }
-        catch (NotFoundImeiException notFoundImeiException)
+
+        if (context.Exception.GetType() == typeof(Exception))
         {
-            var errorMessage = "Не удалось найти IMEI.";
-            _logger.LogWarning(notFoundImeiException, errorMessage);
-            context.Result = new BadRequestObjectResult(errorMessage);
+            return;
         }
-        catch (NotFoundPatternsException notFoundPatterns)
-        {
-            var errorMessage = "Не удалось получить список паттернов из настроек приложения.";
-            _logger.LogWarning(notFoundPatterns, errorMessage);
-            context.Result = new BadRequestObjectResult(errorMessage);
-        }
-        catch (DllNotFoundException dllNotFoundException)
-        {
-            var errorMessage = $"Не удалось загрузить Teseract. Ошибка: {dllNotFoundException.Message}";
-            _logger.LogWarning(dllNotFoundException, errorMessage);
-            context.Result = new BadRequestObjectResult(errorMessage);
-        }
-        catch (Exception ex)
-        {
-            var errorMessage = "Ошибка при обработке изображения.";
-            _logger.LogError(ex, errorMessage);
-            context.Result = new BadRequestObjectResult(errorMessage);
-        }
+
+        string errorMessage = GetErrorMessage(context.Exception);
+        context.Result = new BadRequestObjectResult(errorMessage);
+        context.ExceptionHandled = true;
+        
+        var logger = context.HttpContext.RequestServices
+            .GetRequiredService<ILogger<HandleExceptionsFilter>>();
+        logger.LogError(errorMessage);
     }
+
+    private string GetErrorMessage(Exception contextException) =>
+        contextException switch
+        {
+            NotFoundImeiException => "Не удалось найти IMEI. Пожалуйста настройте приложение.",
+            NotFoundPatternsException => "Не удалось получить список паттернов из настроек приложения.",
+            DllNotFoundException e => $"Не удалось загрузить Teseract. Ошибка: {e.Message}",
+            Exception e => $"Ошибка при обработке изображения. Ошибка: {e.Message}",
+            _ => $"Произошло необработанное исключение.",
+        };
 }

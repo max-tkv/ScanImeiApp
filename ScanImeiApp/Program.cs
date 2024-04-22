@@ -2,16 +2,13 @@ using System.Reflection;
 using Microsoft.OpenApi.Models;
 using ScanImeiApp;
 using ScanImeiApp.Abstractions;
-using ScanImeiApp.Filters;
 using ScanImeiApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews(options =>
-{
-    options.Filters.Add(typeof(HandleExceptionsFilter));
-});
+builder.Services.AddControllersWithViews();
 builder.Services.AddTransient<IScanImeiTextService, ScanImeiTextService>();
+builder.Services.AddTransient<IImageService, ImageService>();
 
 // Swagger
 builder.Services.AddSwaggerGen(c =>
