@@ -18,7 +18,7 @@
                 formData.append('images', files[i]);
             }
 
-            fetch('/Home/Upload', {
+            fetch('/scan', {
                 method: 'POST',
                 body: formData
             })

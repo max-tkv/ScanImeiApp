@@ -1,14 +1,14 @@
 namespace ScanImeiApp.Abstractions;
 
 /// <summary>
-/// Интерфейс представляющий возможность сканирования изображения на наличие IMEI в виде текста.
+/// Интерфейс представляющий возможность сканирования изображения на наличие IMEI при помощи OCR Teseract.
 /// </summary>
 public interface IScanImeiTextService
 {
     /// <summary>
-    /// Получить текстовый IMEI с изображения.
+    /// Получить IMEI с изображения.
     /// </summary>
     /// <param name="memoryStreamImage">Изображение для сканирования.</param>
-    /// <returns>IMEI</returns>
+    /// <returns>Список найденных IMEI.</returns>
     List<string> GetImeiTextFromImage(MemoryStream memoryStreamImage);
 }

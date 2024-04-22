@@ -6,17 +6,24 @@ using Tesseract;
 namespace ScanImeiApp.Services;
 
 /// <summary>
-/// Класс представляющий возможность сканирования изображения на наличие IMEI в виде текста.
+/// Класс представляющий возможность сканирования изображения на наличие IMEI при помощи OCR Teseract.
 /// </summary>
 public class ScanImeiTextService : IScanImeiTextService
 {
     private const string TesseractLanguageName = "eng";
     private const string TesseractTessdataPath = "tessdata";
-    private static readonly string[] ImeiPatterns =
+    private const string PatternsConfigurationKey = "Patterns";
+    private readonly List<string> _imeiPatterns;
+
+    /// <summary>
+    /// .ctor
+    /// </summary>
+    public ScanImeiTextService(IConfiguration configuration)
     {
-        @"IMEI\s(\d{15})",
-        @"IMEI:\s(\d{15})"
-    };
+        _imeiPatterns = configuration
+            .GetRequiredSection(PatternsConfigurationKey)
+            .Get<List<string>>() ?? throw new NotFoundPatternsException();
+    }
 
     /// <inheritdoc />
     public List<string> GetImeiTextFromImage(MemoryStream memoryStreamImage)
@@ -37,7 +44,7 @@ public class ScanImeiTextService : IScanImeiTextService
             TesseractLanguageName, 
             EngineMode.Default);
         using Pix img = Pix.LoadFromMemory(memoryStreamImage.ToArray());
-        using Page recognizedPage = engine.Process(img);
+        using Page recognizedPage = engine.Process(img, PageSegMode.Auto);
         return recognizedPage.GetText();
     }
 
@@ -45,18 +52,21 @@ public class ScanImeiTextService : IScanImeiTextService
     /// Получить IMEI из текста используя регулярные выражения.
     /// </summary>
     /// <param name="recognizedText">Текст.</param>
-    /// <returns>IMEI-строка</returns>
+    /// <returns>Список найденных IMEI</returns>
     /// <exception cref="NotFoundImeiException">Не удалось найти IMEI.</exception>
-    private static List<string> ExtractImeiFromText(string recognizedText)
+    private List<string> ExtractImeiFromText(string recognizedText)
     {
         var result = new List<string>();
-        foreach (var pattern in ImeiPatterns)
+        foreach (var pattern in _imeiPatterns)
         {
             Regex regex = new Regex(pattern);
-            Match match = regex.Match(recognizedText);
-            if (match.Success)
+            MatchCollection matches = regex.Matches(recognizedText);
+            foreach (Match match in matches)
             {
-                result.Add(match.Groups[1].Value);
+                if (match.Success)
+                {
+                    result.Add(match.Groups[1].Value);
+                }
             }
         }
 

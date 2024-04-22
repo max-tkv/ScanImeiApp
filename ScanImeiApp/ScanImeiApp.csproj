@@ -7,6 +7,14 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\net7.0\ScanImeiApp.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\net7.0\ScanImeiApp.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
@@ -18,6 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
       <PackageReference Include="Tesseract" Version="5.2.0" />
       <PackageReference Include="TesseractOCR" Version="5.3.5" />
     </ItemGroup>
@@ -29,6 +38,14 @@
       </AdditionalFiles>
       <None Remove="runtimes\x64\libtesseract50.so" />
       <AdditionalFiles Include="runtimes\x64\libtesseract50.so">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="Tessdata\eng.traineddata" />
+      <AdditionalFiles Include="Tessdata\eng.traineddata">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </AdditionalFiles>
+      <None Remove="Tessdata\rus.traineddata" />
+      <AdditionalFiles Include="Tessdata\rus.traineddata">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
     </ItemGroup>

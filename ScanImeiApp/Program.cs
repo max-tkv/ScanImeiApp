@@ -1,11 +1,26 @@
+using System.Reflection;
+using Microsoft.OpenApi.Models;
 using ScanImeiApp;
 using ScanImeiApp.Abstractions;
+using ScanImeiApp.Filters;
 using ScanImeiApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(typeof(HandleExceptionsFilter));
+});
 builder.Services.AddTransient<IScanImeiTextService, ScanImeiTextService>();
+
+// Swagger
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ScanImeiApp API", Version = "v1" });
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
+});
 
 var app = builder.Build();
 
@@ -22,9 +37,14 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+// Swagger
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ScanImeiApp API V1");
+});
+
+app.MapDefaultControllerRoute();
 
 TesseractLinuxLoaderFix.Patch();
 
