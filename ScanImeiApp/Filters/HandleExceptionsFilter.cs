@@ -26,12 +26,17 @@ public class HandleExceptionsFilter : ExceptionFilterAttribute
         context.Result = new BadRequestObjectResult(errorMessage);
         context.ExceptionHandled = true;
         
+        ErrorLogMessage(context, errorMessage);
+    }
+
+    private static void ErrorLogMessage(ExceptionContext context, string errorMessage)
+    {
         var logger = context.HttpContext.RequestServices
             .GetRequiredService<ILogger<HandleExceptionsFilter>>();
         logger.LogError(errorMessage);
     }
 
-    private string GetErrorMessage(Exception contextException) =>
+    private static string GetErrorMessage(Exception contextException) =>
         contextException switch
         {
             NotFoundImeiException => "Не удалось найти IMEI. Пожалуйста настройте приложение.",
