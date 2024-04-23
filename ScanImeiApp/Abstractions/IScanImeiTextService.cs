@@ -9,6 +9,7 @@ public interface IScanImeiTextService
     /// Получить IMEI с изображения.
     /// </summary>
     /// <param name="memoryStreamImage">Изображение для сканирования.</param>
+    /// <param name="imageName">Имя изображения.</param>
     /// <returns>Список найденных IMEI.</returns>
-    List<string> GetImeiTextFromImage(MemoryStream memoryStreamImage);
+    List<string> GetImeiTextFromImage(MemoryStream memoryStreamImage, string imageName);
 }

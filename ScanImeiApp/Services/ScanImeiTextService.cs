@@ -8,7 +8,7 @@ namespace ScanImeiApp.Services;
 /// <summary>
 /// Класс представляющий возможность сканирования изображения на наличие IMEI при помощи OCR Teseract.
 /// </summary>
-public class ScanImeiTextService : IScanImeiTextService
+public class ScanImeiTextService : IScanImeiTextService, IDisposable
 {
     private const string TesseractLanguageName = "eng";
     private const string TesseractTessdataPath = "tessdata";
@@ -16,15 +16,18 @@ public class ScanImeiTextService : IScanImeiTextService
     private readonly List<string> _imeiPatterns;
     private readonly IImageService _imageService;
     private readonly ILogger<ScanImeiTextService> _logger;
-
-    /// <summary>
-    /// .ctor
-    /// </summary>
+    private readonly TesseractEngine _engine;
+    private bool _disposed;
+    
     public ScanImeiTextService(
         IConfiguration configuration, 
         IImageService imageService, 
         ILogger<ScanImeiTextService> logger)
     {
+        _engine = new TesseractEngine(
+            TesseractTessdataPath, 
+            TesseractLanguageName, 
+            EngineMode.Default);
         _imeiPatterns = configuration
             .GetRequiredSection(PatternsConfigurationKey)
             .Get<List<string>>() ?? throw new NotFoundPatternsException();
@@ -33,12 +36,15 @@ public class ScanImeiTextService : IScanImeiTextService
     }
 
     /// <inheritdoc />
-    public List<string> GetImeiTextFromImage(MemoryStream memoryStreamImage)
+    public List<string> GetImeiTextFromImage(MemoryStream memoryStreamImage, string imageName)
     {
         MemoryStream adjustStreamImage = _imageService.AdjustContrast(memoryStreamImage, 50);
         string recognizedText = RecognizedTextFromImage(adjustStreamImage);
+        LogResultRecognized(imageName, recognizedText);
         return ExtractImeiFromText(recognizedText);
     }
+
+    #region Приватные методы
 
     /// <summary>
     /// Получить текст с изображения.
@@ -47,17 +53,9 @@ public class ScanImeiTextService : IScanImeiTextService
     /// <returns>Текст.</returns>
     private string RecognizedTextFromImage(MemoryStream memoryStreamImage)
     {
-        using var engine = new TesseractEngine(
-            TesseractTessdataPath, 
-            TesseractLanguageName, 
-            EngineMode.Default);
         using Pix img = Pix.LoadFromMemory(memoryStreamImage.ToArray());
-        using Page recognizedPage = engine.Process(img, PageSegMode.Auto);
-        string recognizedText = recognizedPage.GetText();
-        
-        _logger.LogInformation(recognizedText);
-        
-        return recognizedText;
+        using Page recognizedPage = _engine.Process(img, PageSegMode.Auto);
+        return recognizedPage.GetText().Replace(" ", "").Trim();
     }
 
     /// <summary>
@@ -84,4 +82,45 @@ public class ScanImeiTextService : IScanImeiTextService
 
         return result.Distinct().ToList();
     }
+    
+    private void LogResultRecognized(string imageName, string recognizedText)
+    {
+        _logger.LogInformation($"Результат сканирования {imageName}:\n{recognizedText}");
+    }
+
+    #endregion
+    
+    #region IDisposable
+
+    /// <summary>
+    /// Dispose() calls Dispose(true).
+    /// </summary>
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Dispose.
+    /// </summary>
+    /// <param name="disposing"></param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed) return;
+
+        if (disposing)
+        {
+            _engine.Dispose();
+        }
+
+        _disposed = true;
+    }
+    
+    ~ScanImeiTextService()
+    {
+        Dispose(false);
+    }
+
+    #endregion
 }

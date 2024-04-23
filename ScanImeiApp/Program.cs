@@ -7,8 +7,8 @@ using ScanImeiApp.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddTransient<IScanImeiTextService, ScanImeiTextService>();
-builder.Services.AddTransient<IImageService, ImageService>();
+builder.Services.AddScoped<IScanImeiTextService, ScanImeiTextService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 // Swagger
 builder.Services.AddSwaggerGen(c =>

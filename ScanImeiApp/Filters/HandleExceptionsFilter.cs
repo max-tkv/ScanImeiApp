@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using ScanImeiApp.Exceptions;
+using ScanImeiApp.Models;
 
 namespace ScanImeiApp.Filters;
 
@@ -23,7 +24,8 @@ public class HandleExceptionsFilter : ExceptionFilterAttribute
         }
 
         string errorMessage = GetErrorMessage(context.Exception);
-        context.Result = new BadRequestObjectResult(errorMessage);
+        var errorResponse = new ErrorResponse(errorMessage);
+        context.Result = new BadRequestObjectResult(errorResponse);
         context.ExceptionHandled = true;
         
         ErrorLogMessage(context, errorMessage);

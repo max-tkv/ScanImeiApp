@@ -3,7 +3,7 @@ namespace ScanImeiApp.Models;
 /// <summary>
 /// Модель результата на запрос сканирования.
 /// </summary>
-public class ImeiResult
+public class ImeiResponse
 {
     /// <summary>
     /// Наименование изображения.
