@@ -3,4 +3,6 @@
     image: scanimeiapp
     build:
       context: .
-      dockerfile: ScanImeiApp/Dockerfile
+      dockerfile: src/ScanImeiApp.Web/Dockerfile
+    ports:
+      - "8080:8080"

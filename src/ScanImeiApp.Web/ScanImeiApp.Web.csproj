@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <RootNamespace>ScanImeiApp</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <DocumentationFile>bin\Release\net7.0\ScanImeiApp.Web.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\net7.0\ScanImeiApp.Web.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+      <None Remove="Views\Home\Index.cshtml.css" />
+      <Content Include="Views\Home\Index.cshtml.css" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\ScanImeiApp.Contracts\ScanImeiApp.Contracts.csproj" />
+        <ProjectReference Include="..\ScanImeiApp.Tesseract\ScanImeiApp.Tesseract.csproj" />
+        <ProjectReference Include="..\ScanImeiApp\ScanImeiApp.csproj" />
+    </ItemGroup>
+
+</Project>
