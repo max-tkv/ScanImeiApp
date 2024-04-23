@@ -1,3 +1,4 @@
+using System.Globalization;
 using ScanImeiApp.Abstractions;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
@@ -14,7 +15,13 @@ public class ImageService : IImageService
     public MemoryStream AdjustContrast(MemoryStream originalImage, float contrast)
     {
         using var image = Image.Load(originalImage.ToArray());
+        
+        var fileName = $"{DateTime.Now.ToString("s", CultureInfo.InvariantCulture)}.png";
+        image.SaveAsPng($"tessdata/original-{fileName}");
+        
         image.Mutate(x => x.Contrast(contrast));
+        
+        image.SaveAsPng($"tessdata/{fileName}");
         
         MemoryStream adjustedImageStream = new MemoryStream();
         image.Save(adjustedImageStream, new PngEncoder());

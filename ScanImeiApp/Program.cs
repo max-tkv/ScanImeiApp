@@ -1,14 +1,16 @@
 using System.Reflection;
 using Microsoft.OpenApi.Models;
-using ScanImeiApp;
 using ScanImeiApp.Abstractions;
 using ScanImeiApp.Services;
+using ScanImeiApp.Tesseract;
+using ScanImeiApp.Tesseract.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IScanImeiTextService, ScanImeiTextService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.RegisterTesseract();
 
 // Swagger
 builder.Services.AddSwaggerGen(c =>

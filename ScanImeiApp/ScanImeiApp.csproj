@@ -24,33 +24,12 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Tessdata\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
       <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-      <PackageReference Include="Tesseract" Version="5.2.0" />
-      <PackageReference Include="TesseractOCR" Version="5.3.5" />
     </ItemGroup>
-
+    
     <ItemGroup>
-      <None Remove="runtimes\x64\libleptonica-1.82.0.so" />
-      <AdditionalFiles Include="runtimes\x64\libleptonica-1.82.0.so">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <None Remove="runtimes\x64\libtesseract50.so" />
-      <AdditionalFiles Include="runtimes\x64\libtesseract50.so">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <None Remove="Tessdata\eng.traineddata" />
-      <AdditionalFiles Include="Tessdata\eng.traineddata">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
-      <None Remove="Tessdata\rus.traineddata" />
-      <AdditionalFiles Include="Tessdata\rus.traineddata">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </AdditionalFiles>
+      <ProjectReference Include="..\ScanImeiApp.Tesseract\ScanImeiApp.Tesseract.csproj" />
     </ItemGroup>
 
 </Project>

@@ -2,3 +2,9 @@ ScanImeiApp/bin
 ScanImeiApp/obj
 .idea
 ScanImeiApp.Tests/obj
+ScanImeiApp.IntegrationTests/obj
+ScanImeiApp.UnitTests/obj
+ScanImeiApp.IntegrationTests/bin
+ScanImeiApp.Tesseract/obj
+ScanImeiApp.UnitTests/bin
+ScanImeiApp.Tesseract/bin
