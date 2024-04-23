@@ -15,16 +15,21 @@ public class ScanImeiTextService : IScanImeiTextService
     private const string PatternsConfigurationKey = "Patterns";
     private readonly List<string> _imeiPatterns;
     private readonly IImageService _imageService;
+    private readonly ILogger<ScanImeiTextService> _logger;
 
     /// <summary>
     /// .ctor
     /// </summary>
-    public ScanImeiTextService(IConfiguration configuration, IImageService imageService)
+    public ScanImeiTextService(
+        IConfiguration configuration, 
+        IImageService imageService, 
+        ILogger<ScanImeiTextService> logger)
     {
         _imeiPatterns = configuration
             .GetRequiredSection(PatternsConfigurationKey)
             .Get<List<string>>() ?? throw new NotFoundPatternsException();
         _imageService = imageService;
+        _logger = logger;
     }
 
     /// <inheritdoc />
@@ -40,7 +45,7 @@ public class ScanImeiTextService : IScanImeiTextService
     /// </summary>
     /// <param name="memoryStreamImage">Изображение.</param>
     /// <returns>Текст.</returns>
-    private static string RecognizedTextFromImage(MemoryStream memoryStreamImage)
+    private string RecognizedTextFromImage(MemoryStream memoryStreamImage)
     {
         using var engine = new TesseractEngine(
             TesseractTessdataPath, 
@@ -48,7 +53,11 @@ public class ScanImeiTextService : IScanImeiTextService
             EngineMode.Default);
         using Pix img = Pix.LoadFromMemory(memoryStreamImage.ToArray());
         using Page recognizedPage = engine.Process(img, PageSegMode.Auto);
-        return recognizedPage.GetText();
+        string recognizedText = recognizedPage.GetText();
+        
+        _logger.LogInformation(recognizedText);
+        
+        return recognizedText;
     }
 
     /// <summary>

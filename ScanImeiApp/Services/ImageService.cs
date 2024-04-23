@@ -15,8 +15,6 @@ public class ImageService : IImageService
     {
         using var image = Image.Load(originalImage.ToArray());
         image.Mutate(x => x.Contrast(contrast));
-
-        //image.SaveAsPng("/Users/terekhov/Downloads/imagetest.png");
         
         MemoryStream adjustedImageStream = new MemoryStream();
         image.Save(adjustedImageStream, new PngEncoder());
