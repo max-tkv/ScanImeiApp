@@ -46,7 +46,8 @@ public static class RegisterDomainDependenciesExtension
             .AddScoped<RecognizedWithAdjustContrast>()
             .AddScoped<RecognizedWithAdjustSharpness>()
             .AddScoped<RecognizedWithBinaryzation>()
-            .AddScoped<RecognizedWithGaussianBlur>();
+            .AddScoped<RecognizedWithGaussianBlur>()
+            .AddScoped<RecognizedWithResize>();
 
     private static IServiceCollection RegisterRecognizedFactory(
         this IServiceCollection serviceCollection) =>
@@ -68,7 +69,10 @@ public static class RegisterDomainDependenciesExtension
                             container.GetRequiredService<RecognizedWithBinaryzation>)
                         .AddRecognized(
                             RecognizedImageType.GaussianBlur,
-                            container.GetRequiredService<RecognizedWithGaussianBlur>));
+                            container.GetRequiredService<RecognizedWithGaussianBlur>)
+                        .AddRecognized(
+                            RecognizedImageType.Resize,
+                            container.GetRequiredService<RecognizedWithResize>));
 
     #endregion
 }

@@ -3,7 +3,7 @@ WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-# Install libs for Tesseract. Despite this build a few libraries still will be not available
+# Установка библиотек для Tesseract.
 RUN apt-get update && \
     apt-get install -y git cmake build-essential && \
     mkdir /leptonica && \

@@ -26,7 +26,8 @@
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
       <None Remove="tessdata\configs\engine.config" />
-      <AdditionalFiles Include="tessdata\configs\engine.config">
+      <None Remove="tessdata\configs\engine" />
+      <AdditionalFiles Include="tessdata\configs\engine">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </AdditionalFiles>
     </ItemGroup>

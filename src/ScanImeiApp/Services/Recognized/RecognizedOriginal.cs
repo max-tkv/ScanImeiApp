@@ -29,10 +29,11 @@ public class RecognizedOriginal : RecognizedBase, IRecognized
         string imageName,
         CancellationToken cancellationToken)
     {
-        List<string> recognized = RecognizedAndExtractedImei(
+        List<string> recognized = await RecognizedAndExtractedImeiAsync(
             memoryStreamImage, 
             imageName, 
-            RecognizedImageType.Original);
+            RecognizedImageType.Original,
+            cancellationToken);
         return await Task.FromResult(recognized);
     }
 }

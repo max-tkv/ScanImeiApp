@@ -9,7 +9,6 @@ public interface ITesseractService
     /// Получить текст с изображения.
     /// </summary>
     /// <param name="memoryStreamImage">Изображение.</param>
-    /// <param name="unspaced">Удалить все пробелы в результате.</param>
     /// <returns>Текст.</returns>
-    string Recognize(MemoryStream memoryStreamImage, bool unspaced);
+    string Recognize(MemoryStream memoryStreamImage);
 }

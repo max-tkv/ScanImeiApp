@@ -9,11 +9,11 @@ namespace ScanImeiApp.Services.Recognized;
 /// <summary>
 /// Класс представляет обработчик распознавания с изображения к которому применена бинаризация.
 /// </summary>
-public class RecognizedWithGaussianBlur : RecognizedBase, IRecognized
+public class RecognizedWithResize : RecognizedBase, IRecognized
 {
     private readonly IImageService _imageService;
 
-    public RecognizedWithGaussianBlur(
+    public RecognizedWithResize(
         AppOptions appOptions, 
         ITesseractService tesseractService, 
         ILogger<RecognizedBase> logger,
@@ -33,15 +33,15 @@ public class RecognizedWithGaussianBlur : RecognizedBase, IRecognized
         string imageName, 
         CancellationToken cancellationToken)
     {
-        var resultImage = await _imageService.GaussianBlurAsync(
+        var resultImage = await _imageService.ResizeAsync(
             memoryStreamImage, 
             imageName, 
-            _appOptions.ImageSettings.GaussianBlur,
+            _appOptions.ImageSettings.TargetDpi,
             cancellationToken);
         return await RecognizedAndExtractedImeiAsync(
             resultImage, 
             imageName, 
-            RecognizedImageType.GaussianBlur,
+            RecognizedImageType.Resize,
             cancellationToken);
     }
 }

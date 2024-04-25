@@ -2,6 +2,10 @@
     margin-top: 15px;
 }
 
+.list-group {
+    margin-top: 1px;
+}
+
 #imageInput {
     display: inline-block;
     font-size: 16px;

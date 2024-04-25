@@ -85,4 +85,18 @@ public interface IImageService
         string imageName,
         float threshold,
         CancellationToken cancellationToken);
+
+    /// <summary>
+    /// Изменить размер изображения если его DPI менее ожидаемого.
+    /// </summary>
+    /// <param name="originalImage">Изображение.</param>
+    /// <param name="imageName">Имя изображения.</param>
+    /// <param name="targetDpi">DPI.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns></returns>
+    Task<MemoryStream> ResizeAsync(
+        MemoryStream originalImage,
+        string imageName,
+        double targetDpi,
+        CancellationToken cancellationToken);
 }

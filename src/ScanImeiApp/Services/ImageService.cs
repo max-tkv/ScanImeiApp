@@ -5,6 +5,7 @@ using ScanImeiApp.Options;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
+using SixLabors.ImageSharp.Processing.Processors.Transforms;
 
 namespace ScanImeiApp.Services;
 
@@ -122,6 +123,43 @@ public class ImageService : IImageService
         
         MemoryStream streamImage = new MemoryStream();
         await image.SaveAsync(streamImage, new JpegEncoder(), cancellationToken);
+
+        streamImage.Seek(0, SeekOrigin.Begin);
+
+        return streamImage;
+    }
+    
+    /// <inheritdoc />
+    public async Task<MemoryStream> ResizeAsync(
+        MemoryStream originalImage, 
+        string imageName,
+        double targetDpi,
+        CancellationToken cancellationToken)
+    {
+        using var image = Image.Load(originalImage.ToArray());
+        
+        double currentDpi = image.Metadata.HorizontalResolution;
+        _logger.LogInformation($"{imageName}. Текущий DPI: {currentDpi}");
+        if (image.Metadata.HorizontalResolution > targetDpi || image.Metadata.HorizontalResolution == 1)
+        {
+            return originalImage;
+        }
+        double resizeRatio = targetDpi / currentDpi;
+        int targetWidth = (int)Math.Round(image.Width * resizeRatio); 
+        int targetHeight = (int)Math.Round(image.Height * resizeRatio);
+        image.Metadata.HorizontalResolution = targetDpi;
+        image.Metadata.VerticalResolution = targetDpi;
+        var resampler = new BicubicResampler();
+        var jpegEncoder = new JpegEncoder
+        {
+            Quality = 100
+        };
+        
+        image.Mutate(x => x.Resize(targetWidth, targetHeight, resampler, false));
+        await SaveImageToSpecialDirectoryAsync(image, $"dpi{targetDpi}-{imageName}", cancellationToken);
+        
+        MemoryStream streamImage = new MemoryStream();
+        await image.SaveAsync(streamImage, jpegEncoder, cancellationToken);
 
         streamImage.Seek(0, SeekOrigin.Begin);
 

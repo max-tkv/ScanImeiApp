@@ -31,7 +31,6 @@
     
     <ItemGroup>
         <ProjectReference Include="..\ScanImeiApp.Contracts\ScanImeiApp.Contracts.csproj" />
-        <ProjectReference Include="..\ScanImeiApp.Tesseract\ScanImeiApp.Tesseract.csproj" />
         <ProjectReference Include="..\ScanImeiApp\ScanImeiApp.csproj" />
     </ItemGroup>
 

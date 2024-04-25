@@ -18,5 +18,8 @@ public enum RecognizedImageType
     Binaryzation = 4,
     
     // Гауссово размытие.
-    GaussianBlur = 5
+    GaussianBlur = 5,
+    
+    // Увиличение.
+    Resize = 6
 }

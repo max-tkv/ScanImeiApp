@@ -17,7 +17,7 @@ public class TesseractService : ITesseractService, IDisposable
 
     private const string TesseractLanguageName = "eng";
     private const string TesseractTessdataDirectory = "/tessdata";
-    private const string ConfigTessdataFilePath = "/tessdata/configs/engine.config";
+    private const string ConfigTessdataFilePath = "/tessdata/configs/engine";
 
     public TesseractService(ILogger<TesseractService> logger)
     {
@@ -30,24 +30,19 @@ public class TesseractService : ITesseractService, IDisposable
     }
 
     /// <inheritdoc />
-    public string Recognize(MemoryStream memoryStreamImage, bool format)
+    public string Recognize(MemoryStream memoryStreamImage)
     {
         using Pix img = Pix.LoadFromMemory(memoryStreamImage.ToArray());
 
         lock (_lockObject)
         {
             using Page recognizedPage = _engine.Process(img, PageSegMode.SingleColumn);   
-            string result = recognizedPage.GetText();
-            
-            if (format)
-                result = FormatRecognizeText(result);
-            
-            return result;
+            return recognizedPage.GetText();
         }
     }
 
     #region Приватные методы
-
+    
     /// <summary>
     /// Получить путь до каталога с tessdata.
     /// </summary>
@@ -71,17 +66,6 @@ public class TesseractService : ITesseractService, IDisposable
         _logger.LogInformation($"Каталога с config: {tessdataDir}");
         return tessdataDir;
     }
-
-    /// <summary>
-    /// Форматировать распознанный текст с изображения.
-    /// </summary>
-    /// <param name="recognizeText">Распознанный текст.</param>
-    /// <returns>Форматированный распознанный текст.</returns>
-    private static string FormatRecognizeText(string recognizeText) =>
-        recognizeText
-            .Replace(" ", string.Empty)
-            .Replace("\n", string.Empty)
-            .Trim();
 
     #endregion
     

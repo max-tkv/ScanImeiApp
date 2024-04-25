@@ -33,14 +33,15 @@ public class RecognizedWithBinaryzation : RecognizedBase, IRecognized
         string imageName, 
         CancellationToken cancellationToken)
     {
-        var binaryzationImage = await _imageService.BinaryzationAsync(
+        var resultImage = await _imageService.BinaryzationAsync(
             memoryStreamImage, 
             imageName, 
             _appOptions.ImageSettings.Binaryzation,
             cancellationToken);
-        return RecognizedAndExtractedImei(
-            binaryzationImage, 
+        return await RecognizedAndExtractedImeiAsync(
+            resultImage, 
             imageName, 
-            RecognizedImageType.Binaryzation);
+            RecognizedImageType.Binaryzation,
+            cancellationToken);
     }
 }

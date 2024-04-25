@@ -33,14 +33,15 @@ public class RecognizedWithAdjustContrast : RecognizedBase, IRecognized
         string imageName, 
         CancellationToken cancellationToken)
     {
-        var adjustStreamImage = await _imageService.AdjustContrastAsync(
+        var resultImage = await _imageService.AdjustContrastAsync(
             memoryStreamImage, 
             imageName, 
             _appOptions.ImageSettings.Contrast, 
             cancellationToken);
-        return RecognizedAndExtractedImei(
-            adjustStreamImage, 
+        return await RecognizedAndExtractedImeiAsync(
+            resultImage, 
             imageName, 
-            RecognizedImageType.Contrast);
+            RecognizedImageType.Contrast,
+            cancellationToken);
     }
 }

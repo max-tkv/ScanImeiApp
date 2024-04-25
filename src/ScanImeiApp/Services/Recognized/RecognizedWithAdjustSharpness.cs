@@ -33,14 +33,15 @@ public class RecognizedWithAdjustSharpness : RecognizedBase, IRecognized
         string imageName, 
         CancellationToken cancellationToken)
     {
-        var adjustStreamImage = await _imageService.AdjustSharpnessAsync(
+        var resultImage = await _imageService.AdjustSharpnessAsync(
             memoryStreamImage, 
             imageName, 
             _appOptions.ImageSettings.Sharpness, 
             cancellationToken);
-        return RecognizedAndExtractedImei(
-            adjustStreamImage, 
+        return await RecognizedAndExtractedImeiAsync(
+            resultImage, 
             imageName, 
-            RecognizedImageType.Sharpness);
+            RecognizedImageType.Sharpness,
+            cancellationToken);
     }
 }

@@ -25,24 +25,30 @@ public class RecognizedBase
         _appOptions = appOptions;
         _tesseractService = tesseractService;
         _logger= logger;
-        _regexService= regexService;
+        _regexService = regexService;
     }
-    
+
     /// <summary>
     /// Получить текст с изображения и получить IMEI из текста используя регулярные выражения.
     /// </summary>
     /// <param name="imageName">Имя изображения.</param>
     /// <param name="adjustStreamImage">Изображение.</param>
     /// <param name="recognizedImageType">Тип изменения изображения.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Список IMEI.</returns>
-    protected List<string> RecognizedAndExtractedImei(
+    protected async Task<List<string>> RecognizedAndExtractedImeiAsync(
         MemoryStream adjustStreamImage, 
         string imageName, 
-        RecognizedImageType recognizedImageType)
+        RecognizedImageType recognizedImageType,
+        CancellationToken cancellationToken)
     {
         string recognizedText = RecognizedTextFromImage(adjustStreamImage);
-        LogResultRecognized(imageName, recognizedText, recognizedImageType);
-        List<string> extractedImei = _regexService.FindAndExtractedByPatterns(recognizedText, _appOptions.Patterns);
+        string formatRecognizedText = FormatRecognizeText(recognizedText);
+        LogResultRecognized(imageName, formatRecognizedText, recognizedImageType);
+        List<string> extractedImei = await _regexService.FindAndExtractedByPatternsAsync(
+            formatRecognizedText, 
+            _appOptions.Patterns,
+            cancellationToken);
         LogResultExtractedImei(imageName, extractedImei, recognizedImageType);
         return extractedImei;
     }
@@ -53,7 +59,7 @@ public class RecognizedBase
     /// <param name="memoryStreamImage">Изображение.</param>
     /// <returns>Текст.</returns>
     private string RecognizedTextFromImage(MemoryStream memoryStreamImage) =>
-        _tesseractService.Recognize(memoryStreamImage, true);
+        _tesseractService.Recognize(memoryStreamImage);
     
     /// <summary>
     /// Записать логи с результатами изъятия текста с изображения.
@@ -84,5 +90,19 @@ public class RecognizedBase
         _logger.LogInformation($"Тип изменения: {recognizedImageType}. " +
                                $"Результат распознавания IMEI на изображении {imageName}:\n" +
                                $"{string.Join(", ", extractedImei)}");
+    }
+
+    /// <summary>
+    /// Форматировать распознанный текст с изображения.
+    /// </summary>
+    /// <param name="recognizeText">Распознанный текст.</param>
+    /// <returns>Форматированный распознанный текст.</returns>
+    private string FormatRecognizeText(string recognizeText)
+    {
+        string textWithoutSlash = _regexService.RemoveAfterSlash(recognizeText);
+        return textWithoutSlash
+            .Replace(" ", string.Empty)
+            .Replace("\n", string.Empty)
+            .Trim();
     }
 }
