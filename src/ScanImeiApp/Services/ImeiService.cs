@@ -29,9 +29,7 @@ public class ImeiService : IImeiService
         List<RecognizeResult> recognizeResults, 
         CancellationToken cancellationToken)
     {
-        RecognizeResult bestRecognizeResult = recognizeResults
-            .OrderByDescending(x => x.Confidence)
-            .First();
+        RecognizeResult bestRecognizeResult = GetBestRecognizeResult(recognizeResults);
         
         LogResultRecognized(
             bestRecognizeResult.ImageName, 
@@ -55,9 +53,41 @@ public class ImeiService : IImeiService
     #region Приватные методы
     
     /// <summary>
+    /// Получить лучший результат распознавания.
+    /// </summary>
+    /// <param name="recognizeResults">Результаты распознавания.</param>
+    /// <returns>Лучший результат распознавания.</returns>
+    private RecognizeResult GetBestRecognizeResult(List<RecognizeResult> recognizeResults)
+    {
+        IReadOnlyCollection<string> requiredTextImei = _appOptions.RequiredTextImei;
+        var recognizeResultsWithRequiredTextImei = new List<RecognizeResult>();
+        foreach (var recognizeResult in recognizeResults)
+        {
+            foreach (var requiredTextImeiItem in requiredTextImei)
+            {
+                if (recognizeResult.Text.ToLower().Contains(requiredTextImeiItem.ToLower()) && 
+                    recognizeResultsWithRequiredTextImei.All(x => x.RecognizeTextImageType != recognizeResult.RecognizeTextImageType))
+                {
+                    recognizeResultsWithRequiredTextImei.Add(recognizeResult);
+                }   
+            }
+        }
+        
+        if(!recognizeResultsWithRequiredTextImei.Any())
+        {
+            recognizeResultsWithRequiredTextImei = recognizeResults;
+        }
+        
+        return recognizeResultsWithRequiredTextImei
+            .Where(x => x.Text.Any())
+            .OrderByDescending(x => x.Confidence)
+            .First();
+    }
+    
+    /// <summary>
     /// Записать логи с результатами изъятия текста с изображения.
     /// </summary>
-    /// <param name="imageName">Имя изобоажения.</param>
+    /// <param name="imageName">Имя изображения.</param>
     /// <param name="recognizedText">Распознанный текст.</param>
     /// <param name="recognizeTextImageType">Тип изменения изображения.</param>
     /// <param name="confidence">Уровень доверия к распознаванию OCR</param>
@@ -97,7 +127,8 @@ public class ImeiService : IImeiService
         string textWithoutSlash = _regexService.RemoveAfterSlash(recognizeText);
         return textWithoutSlash
             .Replace(" ", string.Empty)
-            .Replace("\n", string.Empty)
+            .Replace("\n", ":")
+            .Replace("::", ":")
             .Trim();
     }
 

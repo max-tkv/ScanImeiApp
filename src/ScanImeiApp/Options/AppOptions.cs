@@ -15,6 +15,11 @@ public class AppOptions
     public ImageSettings ImageSettings { get; set; }
     
     /// <summary>
+    /// Набор обязательного текста в распознанном тексте перед поиском IMEI.
+    /// </summary>
+    public IReadOnlyCollection<string> RequiredTextImei { get; set; }
+    
+    /// <summary>
     /// Паттерны поиска IMEI.
     /// </summary>
     public IReadOnlyCollection<string> Patterns { get; set; }
