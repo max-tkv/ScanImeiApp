@@ -9,20 +9,20 @@ namespace ScanImeiApp.Services;
 /// <summary>
 /// Класс представляющий возможность сканирования изображения на наличие IMEI при помощи OCR Teseract.
 /// </summary>
-public class ScanImeiTextService : IScanImeiTextService
+public class ScannerImeiService : IScannerImeiService
 {
     private const string OriginalImagePrefix = "original-";
     private readonly IImageService _imageService;
     private readonly AppOptions _appOptions;
     private readonly IRecognizeTextFactory _recognizeTextFactory;
-    private readonly ILogger<ScanImeiTextService> _logger;
+    private readonly ILogger<ScannerImeiService> _logger;
     private readonly IImeiService _imeiService;
 
-    public ScanImeiTextService( 
+    public ScannerImeiService( 
         IImageService imageService, 
         AppOptions appOptions,
         IRecognizeTextFactory recognizeTextFactory,
-        ILogger<ScanImeiTextService> logger,
+        ILogger<ScannerImeiService> logger,
         IImeiService imeiService)
     {
         _imageService = imageService;
@@ -67,7 +67,7 @@ public class ScanImeiTextService : IScanImeiTextService
         CancellationToken cancellationToken)
     {
         var resultAll = new List<RecognizeResult>();
-        foreach (var recognizedImageType in _appOptions.EnabledRecognized)
+        foreach (var recognizedImageType in _appOptions.Recognizers)
         {
             try
             {

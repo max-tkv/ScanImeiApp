@@ -3,7 +3,7 @@ namespace ScanImeiApp.Abstractions;
 /// <summary>
 /// Интерфейс представляющий возможность сканирования изображения на наличие IMEI при помощи OCR Teseract.
 /// </summary>
-public interface IScanImeiTextService
+public interface IScannerImeiService
 {
     /// <summary>
     /// Получить IMEI с изображения.

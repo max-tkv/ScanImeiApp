@@ -27,7 +27,7 @@ public class AppOptions
     /// <summary>
     /// Включенные обработчики распознавания текста.
     /// </summary>
-    public IReadOnlyCollection<RecognizeTextImageType> EnabledRecognized { get; set; }
+    public IReadOnlyCollection<RecognizeTextImageType> Recognizers { get; set; }
 }
 
 public class ImageSettings

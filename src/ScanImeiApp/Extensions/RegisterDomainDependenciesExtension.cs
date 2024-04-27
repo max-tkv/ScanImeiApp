@@ -22,7 +22,7 @@ public static class RegisterDomainDependenciesExtension
             .RegisterAppOptions(configuration)
             .RegisterRecognizedFactoryHandlers()
             .RegisterRecognizedFactory()
-            .AddScoped<IScanImeiTextService, ScanImeiTextService>()
+            .AddScoped<IScannerImeiService, ScannerImeiService>()
             .AddScoped<IImageService, ImageService>()
             .AddScoped<IRegexService, RegexService>()
             .AddScoped<IImeiService, ImeiService>();

@@ -14,7 +14,7 @@ public class ScannerController : ControllerBase
     /// <summary>
     /// Выполнить сканирование списка изображений на наличие IMEI.
     /// </summary>
-    /// <param name="scanImeiTextService"></param>
+    /// <param name="scannerImeiService"></param>
     /// <param name="images">Изображения.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Список найденных IMEI.</returns>
@@ -22,7 +22,7 @@ public class ScannerController : ControllerBase
     [ProducesResponseType(typeof(List<ImeiResponse>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> ScanAsync(
-        [FromServices] IScanImeiTextService scanImeiTextService, 
+        [FromServices] IScannerImeiService scannerImeiService, 
         List<IFormFile> images,
         CancellationToken cancellationToken)
     {
@@ -31,7 +31,7 @@ public class ScannerController : ControllerBase
         {
             using var memoryStream = new MemoryStream();
             await image.CopyToAsync(memoryStream, cancellationToken);
-            var imei = await scanImeiTextService.GetImeiTextFromImageAsync(
+            var imei = await scannerImeiService.GetImeiTextFromImageAsync(
                 memoryStream, 
                 image.FileName, 
                 cancellationToken);
@@ -49,7 +49,7 @@ public class ScannerController : ControllerBase
     /// <summary>
     /// Выполнить сканирование одного изображения на наличие IMEI.
     /// </summary>
-    /// <param name="scanImeiTextService"></param>
+    /// <param name="scannerImeiService"></param>
     /// <param name="image">Изображение.</param>
     /// <param name="cancellationToken"Токен отмены.</param>
     /// <returns>Список найденных IMEI.</returns>
@@ -57,13 +57,13 @@ public class ScannerController : ControllerBase
     [ProducesResponseType(typeof(ImeiResponse), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> ScanAsync(
-        [FromServices] IScanImeiTextService scanImeiTextService, 
+        [FromServices] IScannerImeiService scannerImeiService, 
         IFormFile image,
         CancellationToken cancellationToken)
     {
         using var memoryStream = new MemoryStream();
         await image.CopyToAsync(memoryStream, cancellationToken);
-        var imei = await scanImeiTextService.GetImeiTextFromImageAsync(
+        var imei = await scannerImeiService.GetImeiTextFromImageAsync(
             memoryStream, 
             image.FileName, 
             cancellationToken);
