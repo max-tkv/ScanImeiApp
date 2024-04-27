@@ -34,7 +34,7 @@ public class RecognizeTextWithResize : RecognizeTextBase, IRecognizeText
         var resultImage = await _imageService.ResizeAsync(
             memoryStreamImage, 
             imageName, 
-            _appOptions.ImageSettings.TargetDpi,
+            _appOptions.ImageSettings.ResizeDpi,
             cancellationToken);
         return RecognizeText(
             resultImage, 

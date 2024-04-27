@@ -133,23 +133,23 @@ public class ImageService : IImageService
     public async Task<MemoryStream> ResizeAsync(
         MemoryStream originalImage, 
         string imageName,
-        double targetDpi,
+        double ResizeDpi,
         CancellationToken cancellationToken)
     {
         using var image = Image.Load(originalImage.ToArray());
         
         double currentDpi = image.Metadata.HorizontalResolution;
         _logger.LogDebug($"{imageName}. Текущий DPI: {currentDpi}");
-        if (image.Metadata.HorizontalResolution > targetDpi || 
+        if (image.Metadata.HorizontalResolution > ResizeDpi || 
             image.Metadata.HorizontalResolution <= 1)
         {
             return originalImage;
         }
-        double resizeRatio = targetDpi / currentDpi;
+        double resizeRatio = ResizeDpi / currentDpi;
         int targetWidth = (int)Math.Round(image.Width * resizeRatio); 
         int targetHeight = (int)Math.Round(image.Height * resizeRatio);
-        image.Metadata.HorizontalResolution = targetDpi;
-        image.Metadata.VerticalResolution = targetDpi;
+        image.Metadata.HorizontalResolution = ResizeDpi;
+        image.Metadata.VerticalResolution = ResizeDpi;
         var resampler = new BicubicResampler();
         var jpegEncoder = new JpegEncoder
         {
@@ -157,7 +157,7 @@ public class ImageService : IImageService
         };
         
         image.Mutate(x => x.Resize(targetWidth, targetHeight, resampler, false));
-        await SaveImageToSpecialDirectoryAsync(image, $"dpi{targetDpi}-{imageName}", cancellationToken);
+        await SaveImageToSpecialDirectoryAsync(image, $"dpi{ResizeDpi}-{imageName}", cancellationToken);
         
         MemoryStream streamImage = new MemoryStream();
         await image.SaveAsync(streamImage, jpegEncoder, cancellationToken);

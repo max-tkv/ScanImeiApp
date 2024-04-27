@@ -50,5 +50,5 @@ public class ImageSettings
     /// <summary>
     /// DPI.
     /// </summary>
-    public double TargetDpi { get; set; }
+    public double ResizeDpi { get; set; }
 }

@@ -91,12 +91,12 @@ public interface IImageService
     /// </summary>
     /// <param name="originalImage">Изображение.</param>
     /// <param name="imageName">Имя изображения.</param>
-    /// <param name="targetDpi">DPI.</param>
+    /// <param name="resizeDpi">DPI.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns></returns>
     Task<MemoryStream> ResizeAsync(
         MemoryStream originalImage,
         string imageName,
-        double targetDpi,
+        double ResizeDpi,
         CancellationToken cancellationToken);
 }
