@@ -18,7 +18,7 @@ public class ModifierImageFactory : IModificationImageFactory
             return modificationImageFactory.Invoke();
         }
 
-        throw new InvalidOperationException($"Не найден обработчик для изменения изображения." +
+        throw new InvalidOperationException($"Не найден обработчик для изменения изображения. " +
                                             $"Тип изменения: {modificationImageType}");
     }
 

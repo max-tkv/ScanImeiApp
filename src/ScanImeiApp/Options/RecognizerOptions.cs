@@ -10,10 +10,11 @@ public class RecognizerOptions
     /// <summary>
     /// Имя модификаций изображения.
     /// </summary>
-    public required string Name { get; set; }
-    
+    public string Name { get; set; }
+
     /// <summary>
     /// Список модификаций.
     /// </summary>
-    public required IReadOnlyCollection<ModificationImageType> ModificationTypes { get; set; }
+    public IReadOnlyCollection<ModificationImageType> ModificationTypes { get; set; } =
+        Array.Empty<ModificationImageType>();
 }

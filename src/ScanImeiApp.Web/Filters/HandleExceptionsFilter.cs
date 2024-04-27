@@ -20,11 +20,6 @@ public class HandleExceptionsFilter : ExceptionFilterAttribute
             throw new ArgumentNullException(nameof(context));
         }
 
-        if (context.Exception.GetType() == typeof(Exception))
-        {
-            return;
-        }
-
         string errorMessage = GetErrorMessage(context.Exception);
         var errorResponse = new ErrorResponse(errorMessage);
         context.Result = new BadRequestObjectResult(errorResponse);
@@ -47,7 +42,6 @@ public class HandleExceptionsFilter : ExceptionFilterAttribute
             NotFoundImeiException => "Не удалось найти IMEI. Пожалуйста настройте приложение.",
             NotFoundAppOptionsException => "Не удалось получить настройки приложения.",
             DllNotFoundException e => $"Не удалось загрузить Teseract. Ошибка: {e.GetExceptionMessage()}",
-            Exception e => $"Ошибка при обработке изображения. Ошибка: {e.GetExceptionMessage()}",
-            _ => "Произошло необработанное исключение.",
+            _ => $"Произошло необработанное исключение. Описание: {contextException.GetExceptionMessage()}",
         };
 }

@@ -70,7 +70,8 @@ public class ScannerImeiService : IScannerImeiService
         CancellationToken cancellationToken)
     {
         var resultAll = new List<RecognizeResult>();
-        foreach (var recognizer in _appOptions.Recognizers)
+        IEnumerable<RecognizerOptions> recognizers = _appOptions.Recognizers.Distinct();
+        foreach (var recognizer in recognizers)
         {
             try
             {
@@ -86,20 +87,19 @@ public class ScannerImeiService : IScannerImeiService
                     recognizer.Name);
                 resultAll.Add(recognizeResult);
             }
-            catch (ArgumentOutOfRangeException e)
+            catch (Exception e)
             {
-                _logger.LogWarning($"Тип изменения: {recognizer.Name}. " +
-                                   $"Ошибка при обработки измененного изображения. " +
+                _logger.LogWarning($"Имя изображения: {imageName}\n" +
+                                   $"Тип изменения: {recognizer.Name}.\n" +
+                                   $"Ошибка при обработки измененного изображения.\n" +
                                    $"Описание: {e.GetExceptionMessage()}");
             }
         }
-
-        var resultImei = await _imeiService.GetFromTextAsync(resultAll, cancellationToken);
         
-        return resultImei.Distinct().ToList();
+        return await _imeiService.FindImeiToRecognizeResultsAsync(
+            resultAll, 
+            cancellationToken);;
     }
-
     
-
     #endregion
 }

@@ -3,3 +3,4 @@ load_freq_dawg false
 user_words_suffix user-words
 user_patterns_suffix user-patterns
 user_defined_dpi 300
+tessedit_write_images false

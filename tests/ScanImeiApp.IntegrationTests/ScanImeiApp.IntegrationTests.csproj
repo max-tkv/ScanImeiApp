@@ -14,6 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\src\ScanImeiApp.Tesseract\ScanImeiApp.Tesseract.csproj" />
       <ProjectReference Include="..\..\src\ScanImeiApp.Web\ScanImeiApp.Web.csproj" />
     </ItemGroup>
 

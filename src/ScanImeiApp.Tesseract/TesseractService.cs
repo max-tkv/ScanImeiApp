@@ -1,5 +1,3 @@
-using System.Reflection;
-using Microsoft.Extensions.Logging;
 using ScanImeiApp.Abstractions;
 using ScanImeiApp.Models;
 using Tesseract;
@@ -13,21 +11,11 @@ public class TesseractService : ITesseractService, IDisposable
 {
     private bool _disposed;
     private readonly TesseractEngine _engine;
-    private readonly ILogger<TesseractService> _logger;
     private readonly object _lockObject = new object();
 
-    private const string TesseractLanguageName = "eng";
-    private const string TesseractTessdataDirectory = "/tessdata";
-    private const string ConfigTessdataFilePath = "/tessdata/configs/engine";
-
-    public TesseractService(ILogger<TesseractService> logger)
+    public TesseractService(TesseractEngine tesseractEngine)
     {
-        _logger = logger;
-        _engine = new TesseractEngine(
-            GetTessdataDirectoryPath(), 
-            TesseractLanguageName, 
-            EngineMode.Default,
-            GetConfigDirectoryPath());
+        _engine = tesseractEngine;
     }
 
     /// <inheritdoc />
@@ -47,34 +35,6 @@ public class TesseractService : ITesseractService, IDisposable
             };
         }
     }
-
-    #region Приватные методы
-    
-    /// <summary>
-    /// Получить путь до каталога с tessdata.
-    /// </summary>
-    /// <returns>Путь.</returns>
-    private string GetTessdataDirectoryPath()
-    {
-        string runDir = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!;
-        string tessdataDir = string.Concat(runDir, TesseractTessdataDirectory);
-        _logger.LogDebug($"Каталога с tessdata: {tessdataDir}");
-        return tessdataDir;
-    }
-    
-    /// <summary>
-    /// Получить путь до конфигурации с tessdata.
-    /// </summary>
-    /// <returns>Путь.</returns>
-    private string GetConfigDirectoryPath()
-    {
-        string runDir = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!;
-        string tessdataDir = string.Concat(runDir, ConfigTessdataFilePath);
-        _logger.LogDebug($"Каталога с config: {tessdataDir}");
-        return tessdataDir;
-    }
-
-    #endregion
     
     #region IDisposable
 

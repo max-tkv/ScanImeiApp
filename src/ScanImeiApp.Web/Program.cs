@@ -9,6 +9,10 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+        builder.WebHost.ConfigureKestrel(t =>
+        {
+            t.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(15);
+        });
 
         builder.Services.AddControllersWithViews();
         builder.Services.RegisterDomain(builder.Configuration);

@@ -27,18 +27,18 @@ public class ModifierService : IModifierService
         IReadOnlyCollection<ModificationImageType> recognizerModificationTypes, 
         CancellationToken cancellationToken)
     {
-        MemoryStream resultImage = new MemoryStream(originalImage.ToArray());
+        var resultImage = await ModifyImageAsync(
+            originalImage, 
+            imageName, 
+            ModificationImageType.Original, 
+            cancellationToken);
+        
         foreach (var recognizerModificationType in recognizerModificationTypes)
         {
-            if (recognizerModificationType == ModificationImageType.Original)
-            {
-                continue;
-            }
-                
-            IModifierImage modifierImage = _modificationImageFactory.Create(recognizerModificationType);
-            resultImage = await modifierImage.ModifyImageAsync(
-                resultImage, 
+            resultImage = await ModifyImageAsync(
+                originalImage, 
                 imageName, 
+                recognizerModificationType, 
                 cancellationToken);
         }
 
@@ -49,4 +49,34 @@ public class ModifierService : IModifierService
 
         return resultImage;
     }
+
+    #region Приватные методы
+
+    /// <summary>
+    /// Выполнить модификацию изображения.
+    /// </summary>
+    /// <param name="originalImage">Оригинальное изображение.</param>
+    /// <param name="imageName">Имя изображения.</param>
+    /// <param name="modificationImageType">Тип модификации.</param>
+    /// <param name="cancellationToken">Токен токен.</param>
+    /// <returns>Модифицированное изображение.</returns>
+    private async Task<MemoryStream> ModifyImageAsync(
+        MemoryStream originalImage, 
+        string imageName, 
+        ModificationImageType modificationImageType,
+        CancellationToken cancellationToken)
+    {
+        if (modificationImageType == ModificationImageType.Original)
+        {
+            return originalImage;
+        }
+        
+        IModifierImage modifierImage = _modificationImageFactory.Create(modificationImageType);
+        return await modifierImage.ModifyImageAsync(
+            originalImage, 
+            imageName, 
+            cancellationToken);;
+    }
+
+    #endregion
 }

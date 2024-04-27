@@ -8,10 +8,12 @@ namespace ScanImeiApp.Abstractions;
 public interface IImeiService
 {
     /// <summary>
-    /// 
+    /// Получить IMEI из результатов распознавания текста на изображении.
     /// </summary>
-    /// <returns></returns>
-    Task<List<string>> GetFromTextAsync(
+    /// <param name="recognizeResults">Результаты распознавания текста на изображении.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Список найденных IMEI.</returns>
+    Task<List<string>> FindImeiToRecognizeResultsAsync(
         List<RecognizeResult> recognizeResults, 
         CancellationToken cancellationToken);
 }

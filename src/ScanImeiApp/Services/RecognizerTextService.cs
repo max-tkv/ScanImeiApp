@@ -51,10 +51,11 @@ public class RecognizerTextService : IRecognizerTextService
     /// <param name="recognizedResult">Данными распознавания.</param>
     private void LogDebugResultRecognizedText(RecognizeResult recognizedResult)
     {
+        var recognizedResultText = string.IsNullOrWhiteSpace(recognizedResult.Text) ? "-" : recognizedResult.Text;
         _logger.LogDebug($"Имя изображения: {recognizedResult.ImageName}\n" +
-                         $"Имя распознавателя: {recognizedResult.RecognizerName}. " +
+                         $"Имя распознавателя: {recognizedResult.RecognizerName}.\n" +
                          $"Уровень доверия к распознаванию OCR - {recognizedResult.Confidence}.\n" +
-                         $"Результат изъятия текста с изображения:\n{recognizedResult.Text}");
+                         $"Результат изъятия текста с изображения:\n{recognizedResultText}");
     }
 
     #endregion

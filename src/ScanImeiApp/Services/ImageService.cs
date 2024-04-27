@@ -10,7 +10,7 @@ using SixLabors.ImageSharp.Processing.Processors.Transforms;
 namespace ScanImeiApp.Services;
 
 /// <summary>
-/// Клссс представляющий возможность работы с изображениями.
+/// Класс представляющий возможность работы с изображениями.
 /// </summary>
 public class ImageService : IImageService
 {
