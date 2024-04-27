@@ -1,34 +1,32 @@
 using Microsoft.Extensions.Logging;
 using ScanImeiApp.Abstractions;
 using ScanImeiApp.Lookups;
+using ScanImeiApp.Models;
 using ScanImeiApp.Options;
-using ScanImeiApp.Tesseract.Abstractions;
 
 namespace ScanImeiApp.Services.Recognized;
 
 /// <summary>
 /// Класс представляет обработчик распознавания с изображения у которого увеличена резкость.
 /// </summary>
-public class RecognizedWithAdjustSharpness : RecognizedBase, IRecognized
+public class RecognizeTextWithAdjustSharpness : RecognizeTextBase, IRecognizeText
 {
     private readonly IImageService _imageService;
 
-    public RecognizedWithAdjustSharpness(
+    public RecognizeTextWithAdjustSharpness(
         AppOptions appOptions, 
         ITesseractService tesseractService, 
-        ILogger<RecognizedBase> logger,
-        IImageService imageService,
-        IRegexService regexService) : base(
+        ILogger<RecognizeTextBase> logger,
+        IImageService imageService) : base(
         appOptions, 
         tesseractService, 
-        logger,
-        regexService)
+        logger)
     {
         _imageService = imageService;
     }
     
     /// <inheritdoc />
-    public async Task<List<string>> RecognizeImeiAsync(
+    public async Task<RecognizeResult> RecognizeTextAsync(
         MemoryStream memoryStreamImage, 
         string imageName, 
         CancellationToken cancellationToken)
@@ -38,10 +36,9 @@ public class RecognizedWithAdjustSharpness : RecognizedBase, IRecognized
             imageName, 
             _appOptions.ImageSettings.Sharpness, 
             cancellationToken);
-        return await RecognizedAndExtractedImeiAsync(
+        return RecognizeText(
             resultImage, 
             imageName, 
-            RecognizedImageType.Sharpness,
-            cancellationToken);
+            RecognizeTextImageType.Sharpness);
     }
 }

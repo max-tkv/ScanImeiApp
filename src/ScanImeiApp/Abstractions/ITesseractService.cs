@@ -1,4 +1,6 @@
-namespace ScanImeiApp.Tesseract.Abstractions;
+using ScanImeiApp.Models;
+
+namespace ScanImeiApp.Abstractions;
 
 /// <summary>
 /// Интерфейс представляет описание сервиса взаимодействия с Tesseract.
@@ -10,5 +12,5 @@ public interface ITesseractService
     /// </summary>
     /// <param name="memoryStreamImage">Изображение.</param>
     /// <returns>Текст.</returns>
-    string Recognize(MemoryStream memoryStreamImage);
+    RecognizeResult Recognize(MemoryStream memoryStreamImage);
 }

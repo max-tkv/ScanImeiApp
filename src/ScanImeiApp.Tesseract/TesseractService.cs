@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.Extensions.Logging;
-using ScanImeiApp.Tesseract.Abstractions;
+using ScanImeiApp.Abstractions;
+using ScanImeiApp.Models;
 using Tesseract;
 
 namespace ScanImeiApp.Tesseract;
@@ -30,14 +31,20 @@ public class TesseractService : ITesseractService, IDisposable
     }
 
     /// <inheritdoc />
-    public string Recognize(MemoryStream memoryStreamImage)
+    public RecognizeResult Recognize(MemoryStream memoryStreamImage)
     {
         using Pix img = Pix.LoadFromMemory(memoryStreamImage.ToArray());
 
         lock (_lockObject)
         {
-            using Page recognizedPage = _engine.Process(img, PageSegMode.SingleColumn);   
-            return recognizedPage.GetText();
+            using Page recognizedPage = _engine.Process(img, PageSegMode.SingleColumn);
+            float recognizedConfidence = recognizedPage.GetMeanConfidence();
+            string recognizedText = recognizedPage.GetText();
+            return new RecognizeResult
+            {
+                Confidence = recognizedConfidence,
+                Text = recognizedText
+            };
         }
     }
 
@@ -51,7 +58,7 @@ public class TesseractService : ITesseractService, IDisposable
     {
         string runDir = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!;
         string tessdataDir = string.Concat(runDir, TesseractTessdataDirectory);
-        _logger.LogInformation($"Каталога с tessdata: {tessdataDir}");
+        _logger.LogDebug($"Каталога с tessdata: {tessdataDir}");
         return tessdataDir;
     }
     
@@ -63,7 +70,7 @@ public class TesseractService : ITesseractService, IDisposable
     {
         string runDir = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!;
         string tessdataDir = string.Concat(runDir, ConfigTessdataFilePath);
-        _logger.LogInformation($"Каталога с config: {tessdataDir}");
+        _logger.LogDebug($"Каталога с config: {tessdataDir}");
         return tessdataDir;
     }
 

@@ -1,39 +1,36 @@
 using Microsoft.Extensions.Logging;
 using ScanImeiApp.Abstractions;
 using ScanImeiApp.Lookups;
+using ScanImeiApp.Models;
 using ScanImeiApp.Options;
-using ScanImeiApp.Tesseract.Abstractions;
 
 namespace ScanImeiApp.Services.Recognized;
 
 /// <summary>
 /// Класс представляет обработчик распознавания с оригинального изображения.
 /// </summary>
-public class RecognizedOriginal : RecognizedBase, IRecognized
+public class RecognizeTextOriginal : RecognizeTextBase, IRecognizeText
 {
-    public RecognizedOriginal(
+    public RecognizeTextOriginal(
         AppOptions appOptions, 
         ITesseractService tesseractService, 
-        ILogger<RecognizedBase> logger,
-        IRegexService regexService) : base(
+        ILogger<RecognizeTextBase> logger) : base(
         appOptions, 
         tesseractService, 
-        logger,
-        regexService)
+        logger)
     {
     }
     
     /// <inheritdoc />
-    public async Task<List<string>> RecognizeImeiAsync(
+    public Task<RecognizeResult> RecognizeTextAsync(
         MemoryStream memoryStreamImage,
         string imageName,
         CancellationToken cancellationToken)
     {
-        List<string> recognized = await RecognizedAndExtractedImeiAsync(
+        RecognizeResult recognized = RecognizeText(
             memoryStreamImage, 
             imageName, 
-            RecognizedImageType.Original,
-            cancellationToken);
-        return await Task.FromResult(recognized);
+            RecognizeTextImageType.Original);
+        return Task.FromResult(recognized);
     }
 }

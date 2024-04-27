@@ -5,12 +5,12 @@ namespace ScanImeiApp.Abstractions;
 /// <summary>
 /// Интерфейс представляет описание фабрики обработчиков распознавания текста на картинки.
 /// </summary>
-public interface IRecognizedFactory
+public interface IRecognizeTextFactory
 {
     /// <summary>
     /// Создать обработчик распознавания текста.
     /// </summary>
-    /// <param name="recognizedImageType">Типы изображения.</param>
+    /// <param name="recognizeTextImageType">Типы изображения.</param>
     /// <returns>Обработчик распознавания текста</returns>
-    IRecognized Create(RecognizedImageType recognizedImageType);
+    IRecognizeText Create(RecognizeTextImageType recognizeTextImageType);
 }

@@ -24,7 +24,8 @@ public static class RegisterDomainDependenciesExtension
             .RegisterRecognizedFactory()
             .AddScoped<IScanImeiTextService, ScanImeiTextService>()
             .AddScoped<IImageService, ImageService>()
-            .AddScoped<IRegexService, RegexService>();
+            .AddScoped<IRegexService, RegexService>()
+            .AddScoped<IImeiService, ImeiService>();
     }
 
     #region Приватные методы
@@ -42,37 +43,37 @@ public static class RegisterDomainDependenciesExtension
     private static IServiceCollection RegisterRecognizedFactoryHandlers(
         this IServiceCollection services) =>
         services
-            .AddScoped<RecognizedOriginal>()
-            .AddScoped<RecognizedWithAdjustContrast>()
-            .AddScoped<RecognizedWithAdjustSharpness>()
-            .AddScoped<RecognizedWithBinaryzation>()
-            .AddScoped<RecognizedWithGaussianBlur>()
-            .AddScoped<RecognizedWithResize>();
+            .AddScoped<RecognizeTextOriginal>()
+            .AddScoped<RecognizeTextWithAdjustContrast>()
+            .AddScoped<RecognizeTextWithAdjustSharpness>()
+            .AddScoped<RecognizeTextWithBinaryzation>()
+            .AddScoped<RecognizeTextWithGaussianBlur>()
+            .AddScoped<RecognizeTextWithResize>();
 
     private static IServiceCollection RegisterRecognizedFactory(
         this IServiceCollection serviceCollection) =>
         serviceCollection
-            .AddScoped<IRecognizedFactory>(
+            .AddScoped<IRecognizeTextFactory>(
                 container =>
-                    new RecognizedFactory()
-                        .AddRecognized(
-                            RecognizedImageType.Original,
-                            container.GetRequiredService<RecognizedOriginal>)
-                        .AddRecognized(
-                            RecognizedImageType.Contrast,
-                            container.GetRequiredService<RecognizedWithAdjustContrast>)
-                        .AddRecognized(
-                            RecognizedImageType.Sharpness,
-                            container.GetRequiredService<RecognizedWithAdjustSharpness>)
-                        .AddRecognized(
-                            RecognizedImageType.Binaryzation,
-                            container.GetRequiredService<RecognizedWithBinaryzation>)
-                        .AddRecognized(
-                            RecognizedImageType.GaussianBlur,
-                            container.GetRequiredService<RecognizedWithGaussianBlur>)
-                        .AddRecognized(
-                            RecognizedImageType.Resize,
-                            container.GetRequiredService<RecognizedWithResize>));
+                    new RecognizeTextFactory()
+                        .AddRecognizeText(
+                            RecognizeTextImageType.Original,
+                            container.GetRequiredService<RecognizeTextOriginal>)
+                        .AddRecognizeText(
+                            RecognizeTextImageType.Contrast,
+                            container.GetRequiredService<RecognizeTextWithAdjustContrast>)
+                        .AddRecognizeText(
+                            RecognizeTextImageType.Sharpness,
+                            container.GetRequiredService<RecognizeTextWithAdjustSharpness>)
+                        .AddRecognizeText(
+                            RecognizeTextImageType.Binaryzation,
+                            container.GetRequiredService<RecognizeTextWithBinaryzation>)
+                        .AddRecognizeText(
+                            RecognizeTextImageType.GaussianBlur,
+                            container.GetRequiredService<RecognizeTextWithGaussianBlur>)
+                        .AddRecognizeText(
+                            RecognizeTextImageType.Resize,
+                            container.GetRequiredService<RecognizeTextWithResize>));
 
     #endregion
 }

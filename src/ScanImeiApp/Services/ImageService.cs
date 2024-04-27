@@ -139,8 +139,9 @@ public class ImageService : IImageService
         using var image = Image.Load(originalImage.ToArray());
         
         double currentDpi = image.Metadata.HorizontalResolution;
-        _logger.LogInformation($"{imageName}. Текущий DPI: {currentDpi}");
-        if (image.Metadata.HorizontalResolution > targetDpi || image.Metadata.HorizontalResolution == 1)
+        _logger.LogDebug($"{imageName}. Текущий DPI: {currentDpi}");
+        if (image.Metadata.HorizontalResolution > targetDpi || 
+            image.Metadata.HorizontalResolution <= 1)
         {
             return originalImage;
         }
@@ -188,7 +189,7 @@ public class ImageService : IImageService
         string imageDirectoryPath = GetImageDirectoryPath();
         string imageNameWithDirectory = $"{imageDirectoryPath}/{imageName}";
         await image.SaveAsJpegAsync(imageNameWithDirectory, cancellationToken);
-        _logger.LogInformation($"Изображение: {imageName}\nсохранено в:{imageNameWithDirectory}");
+        _logger.LogDebug($"Изображение: {imageName}\nсохранено в:{imageNameWithDirectory}");
     }
     
     /// <summary>

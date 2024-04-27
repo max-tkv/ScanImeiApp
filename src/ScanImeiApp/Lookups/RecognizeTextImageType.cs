@@ -3,7 +3,7 @@ namespace ScanImeiApp.Lookups;
 /// <summary>
 /// Перечисление представляет типы изменения изображения перед извлечением текста. 
 /// </summary>
-public enum RecognizedImageType
+public enum RecognizeTextImageType
 {
     // Оригинальное.
     Original = 1,
