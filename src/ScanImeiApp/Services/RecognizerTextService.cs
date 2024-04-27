@@ -1,44 +1,33 @@
 using Microsoft.Extensions.Logging;
 using ScanImeiApp.Abstractions;
-using ScanImeiApp.Lookups;
 using ScanImeiApp.Models;
-using ScanImeiApp.Options;
 
-namespace ScanImeiApp.Services.Recognized;
+namespace ScanImeiApp.Services;
 
 /// <summary>
-/// Базовый класс представляет общий функционал распознавания с изображения.
+/// Класс представляет сервис по распознаванию текста на изображении.
 /// </summary>
-public class RecognizeTextBase
+public class RecognizerTextService : IRecognizerTextService
 {
-    protected readonly AppOptions _appOptions;
     private readonly ITesseractService _tesseractService;
-    private readonly ILogger<RecognizeTextBase> _logger;
+    private readonly ILogger<RecognizerTextService> _logger;
 
-    protected RecognizeTextBase(
-        AppOptions appOptions,
+    public RecognizerTextService(
         ITesseractService tesseractService, 
-        ILogger<RecognizeTextBase> logger)
+        ILogger<RecognizerTextService> logger)
     {
-        _appOptions = appOptions;
         _tesseractService = tesseractService;
-        _logger= logger;
+        _logger = logger;
     }
-
-    /// <summary>
-    /// Получить текст с изображения и получить IMEI из текста используя регулярные выражения.
-    /// </summary>
-    /// <param name="imageName">Имя изображения.</param>
-    /// <param name="adjustStreamImage">Изображение.</param>
-    /// <param name="recognizeTextImageType">Тип изменения изображения.</param>
-    /// <returns>Список IMEI.</returns>
-    protected RecognizeResult RecognizeText(
-        MemoryStream adjustStreamImage, 
-        string imageName, 
-        RecognizeTextImageType recognizeTextImageType)
+    
+    /// <inheritdoc />
+    public RecognizeResult RecognizeText(
+        MemoryStream image,
+        string imageName,
+        string recognizerName)
     {
-        RecognizeResult recognizedResult = RecognizedTextFromImage(adjustStreamImage);
-        recognizedResult.RecognizeTextImageType = recognizeTextImageType;
+        RecognizeResult recognizedResult = RecognizedTextFromImage(image);
+        recognizedResult.RecognizerName = recognizerName;
         recognizedResult.ImageName = imageName;
 
         LogDebugResultRecognizedText(recognizedResult);
@@ -63,7 +52,7 @@ public class RecognizeTextBase
     private void LogDebugResultRecognizedText(RecognizeResult recognizedResult)
     {
         _logger.LogDebug($"Имя изображения: {recognizedResult.ImageName}\n" +
-                         $"Тип изменения: {recognizedResult.RecognizeTextImageType}. " +
+                         $"Имя распознавателя: {recognizedResult.RecognizerName}. " +
                          $"Уровень доверия к распознаванию OCR - {recognizedResult.Confidence}.\n" +
                          $"Результат изъятия текста с изображения:\n{recognizedResult.Text}");
     }

@@ -14,22 +14,25 @@ public class ScannerImeiService : IScannerImeiService
     private const string OriginalImagePrefix = "original-";
     private readonly IImageService _imageService;
     private readonly AppOptions _appOptions;
-    private readonly IRecognizeTextFactory _recognizeTextFactory;
     private readonly ILogger<ScannerImeiService> _logger;
     private readonly IImeiService _imeiService;
+    private readonly IRecognizerTextService _recognizerTextService;
+    private readonly IModifierService _modifierService;
 
     public ScannerImeiService( 
         IImageService imageService, 
         AppOptions appOptions,
-        IRecognizeTextFactory recognizeTextFactory,
         ILogger<ScannerImeiService> logger,
-        IImeiService imeiService)
+        IImeiService imeiService,
+        IRecognizerTextService recognizerTextService,
+        IModifierService modifierService)
     {
         _imageService = imageService;
         _appOptions = appOptions;
-        _recognizeTextFactory = recognizeTextFactory;
         _logger = logger;
         _imeiService = imeiService;
+        _recognizerTextService = recognizerTextService;
+        _modifierService = modifierService;
     }
 
     /// <inheritdoc />
@@ -67,20 +70,25 @@ public class ScannerImeiService : IScannerImeiService
         CancellationToken cancellationToken)
     {
         var resultAll = new List<RecognizeResult>();
-        foreach (var recognizedImageType in _appOptions.Recognizers)
+        foreach (var recognizer in _appOptions.Recognizers)
         {
             try
             {
-                IRecognizeText recognizeText = _recognizeTextFactory.Create(recognizedImageType);
-                RecognizeResult recognizeResult = await recognizeText.RecognizeTextAsync(
-                    image, 
+                MemoryStream modifyImage = await _modifierService.ApplyModifyImageAsync(
+                    image,
                     imageName, 
+                    recognizer.Name,
+                    recognizer.ModificationTypes, 
                     cancellationToken);
+                RecognizeResult recognizeResult = _recognizerTextService.RecognizeText(
+                    modifyImage, 
+                    imageName, 
+                    recognizer.Name);
                 resultAll.Add(recognizeResult);
             }
             catch (ArgumentOutOfRangeException e)
             {
-                _logger.LogWarning($"Тип изменения: {recognizedImageType}. " +
+                _logger.LogWarning($"Тип изменения: {recognizer.Name}. " +
                                    $"Ошибка при обработки измененного изображения. " +
                                    $"Описание: {e.GetExceptionMessage()}");
             }

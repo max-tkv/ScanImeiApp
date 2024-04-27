@@ -6,7 +6,7 @@ using ScanImeiApp.Exceptions;
 using ScanImeiApp.Lookups;
 using ScanImeiApp.Options;
 using ScanImeiApp.Services;
-using ScanImeiApp.Services.Recognized;
+using ScanImeiApp.Services.ModificationImage;
 
 namespace ScanImeiApp.Extensions;
 
@@ -20,12 +20,14 @@ public static class RegisterDomainDependenciesExtension
 
         return serviceCollection
             .RegisterAppOptions(configuration)
-            .RegisterRecognizedFactoryHandlers()
-            .RegisterRecognizedFactory()
+            .RegisterModifierImageFactoryHandlers()
+            .RegisterModifierImageFactory()
             .AddScoped<IScannerImeiService, ScannerImeiService>()
             .AddScoped<IImageService, ImageService>()
             .AddScoped<IRegexService, RegexService>()
-            .AddScoped<IImeiService, ImeiService>();
+            .AddScoped<IImeiService, ImeiService>()
+            .AddScoped<IRecognizerTextService, RecognizerTextService>()
+            .AddScoped<IModifierService, ModifierService>();
     }
 
     #region Приватные методы
@@ -40,40 +42,36 @@ public static class RegisterDomainDependenciesExtension
         return serviceCollection.AddSingleton(appOptions);
     }
     
-    private static IServiceCollection RegisterRecognizedFactoryHandlers(
+    private static IServiceCollection RegisterModifierImageFactoryHandlers(
         this IServiceCollection services) =>
         services
-            .AddScoped<RecognizeTextOriginal>()
-            .AddScoped<RecognizeTextWithAdjustContrast>()
-            .AddScoped<RecognizeTextWithAdjustSharpness>()
-            .AddScoped<RecognizeTextWithBinaryzation>()
-            .AddScoped<RecognizeTextWithGaussianBlur>()
-            .AddScoped<RecognizeTextWithResize>();
+            .AddScoped<ModifierImageAdjustContrast>()
+            .AddScoped<ModifierImageAdjustSharpness>()
+            .AddScoped<ModifierImageBinaryzation>()
+            .AddScoped<ModifierImageGaussianBlur>()
+            .AddScoped<ModifierImageResize>();
 
-    private static IServiceCollection RegisterRecognizedFactory(
+    private static IServiceCollection RegisterModifierImageFactory(
         this IServiceCollection serviceCollection) =>
         serviceCollection
-            .AddScoped<IRecognizeTextFactory>(
+            .AddScoped<IModificationImageFactory>(
                 container =>
-                    new RecognizeTextFactory()
-                        .AddRecognizeText(
-                            RecognizeTextImageType.Original,
-                            container.GetRequiredService<RecognizeTextOriginal>)
-                        .AddRecognizeText(
-                            RecognizeTextImageType.Contrast,
-                            container.GetRequiredService<RecognizeTextWithAdjustContrast>)
-                        .AddRecognizeText(
-                            RecognizeTextImageType.Sharpness,
-                            container.GetRequiredService<RecognizeTextWithAdjustSharpness>)
-                        .AddRecognizeText(
-                            RecognizeTextImageType.Binaryzation,
-                            container.GetRequiredService<RecognizeTextWithBinaryzation>)
-                        .AddRecognizeText(
-                            RecognizeTextImageType.GaussianBlur,
-                            container.GetRequiredService<RecognizeTextWithGaussianBlur>)
-                        .AddRecognizeText(
-                            RecognizeTextImageType.Resize,
-                            container.GetRequiredService<RecognizeTextWithResize>));
+                    new ModifierImageFactory()
+                        .AddModifierImage(
+                            ModificationImageType.Contrast,
+                            container.GetRequiredService<ModifierImageAdjustContrast>)
+                        .AddModifierImage(
+                            ModificationImageType.Sharpness,
+                            container.GetRequiredService<ModifierImageAdjustSharpness>)
+                        .AddModifierImage(
+                            ModificationImageType.Binaryzation,
+                            container.GetRequiredService<ModifierImageBinaryzation>)
+                        .AddModifierImage(
+                            ModificationImageType.GaussianBlur,
+                            container.GetRequiredService<ModifierImageGaussianBlur>)
+                        .AddModifierImage(
+                            ModificationImageType.Resize,
+                            container.GetRequiredService<ModifierImageResize>));
 
     #endregion
 }

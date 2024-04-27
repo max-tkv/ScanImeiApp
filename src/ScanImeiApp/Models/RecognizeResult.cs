@@ -1,5 +1,3 @@
-using ScanImeiApp.Lookups;
-
 namespace ScanImeiApp.Models;
 
 /// <summary>
@@ -23,7 +21,7 @@ public class RecognizeResult
     public float Confidence { get; set; }
     
     /// <summary>
-    /// Тип изменения перед распознаванием текста.
+    /// Имя распознавателя.
     /// </summary>
-    public RecognizeTextImageType RecognizeTextImageType { get; set; }
+    public string RecognizerName { get; set; }
 }

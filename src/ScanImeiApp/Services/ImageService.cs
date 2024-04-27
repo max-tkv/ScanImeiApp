@@ -34,7 +34,6 @@ public class ImageService : IImageService
         using var image = Image.Load(originalImage.ToArray());
         
         image.Mutate(x => x.Contrast(contrast));
-        await SaveImageToSpecialDirectoryAsync(image, $"contrast-{imageName}", cancellationToken);
         
         MemoryStream streamImage = new MemoryStream();
         await image.SaveAsync(streamImage, new JpegEncoder(), cancellationToken);
@@ -54,7 +53,6 @@ public class ImageService : IImageService
         using var image = Image.Load(originalImage.ToArray());
         
         image.Mutate(x => x.GaussianSharpen(sharpness));
-        await SaveImageToSpecialDirectoryAsync(image, $"sharpness-{imageName}", cancellationToken);
         
         MemoryStream streamImage = new MemoryStream();
         await image.SaveAsync(streamImage, new JpegEncoder(), cancellationToken);
@@ -74,7 +72,6 @@ public class ImageService : IImageService
         using var image = Image.Load(originalImage.ToArray());
         
         image.Mutate(x => x.BinaryThreshold(threshold, Color.White, Color.Black));
-        await SaveImageToSpecialDirectoryAsync(image, $"binarized-{imageName}", cancellationToken);
         
         MemoryStream streamImage = new MemoryStream();
         await image.SaveAsync(streamImage, new JpegEncoder(), cancellationToken);
@@ -90,8 +87,11 @@ public class ImageService : IImageService
         string imageName,
         CancellationToken cancellationToken)
     {
-        using var image = Image.Load(memoryStreamImage.ToArray());
-        await SaveImageToSpecialDirectoryAsync(image, imageName, cancellationToken);
+        if (_appOptions.AllowSavedImage)
+        {
+            using var image = Image.Load(memoryStreamImage.ToArray());
+            await SaveImageToSpecialDirectoryAsync(image, imageName, cancellationToken);
+        }
     }
 
     /// <inheritdoc />
@@ -119,7 +119,6 @@ public class ImageService : IImageService
         using var image = Image.Load(originalImage.ToArray());
         
         image.Mutate(x => x.GaussianBlur(threshold));
-        await SaveImageToSpecialDirectoryAsync(image, $"gaussian-blur-{imageName}", cancellationToken);
         
         MemoryStream streamImage = new MemoryStream();
         await image.SaveAsync(streamImage, new JpegEncoder(), cancellationToken);
@@ -157,7 +156,6 @@ public class ImageService : IImageService
         };
         
         image.Mutate(x => x.Resize(targetWidth, targetHeight, resampler, false));
-        await SaveImageToSpecialDirectoryAsync(image, $"dpi{ResizeDpi}-{imageName}", cancellationToken);
         
         MemoryStream streamImage = new MemoryStream();
         await image.SaveAsync(streamImage, jpegEncoder, cancellationToken);

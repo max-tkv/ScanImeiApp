@@ -1,5 +1,3 @@
-using ScanImeiApp.Lookups;
-
 namespace ScanImeiApp.Options;
 
 public class AppOptions
@@ -12,7 +10,7 @@ public class AppOptions
     /// <summary>
     /// Настройки изображения перед изъятием текста.
     /// </summary>
-    public ImageSettings ImageSettings { get; set; }
+    public ImageOptions ImageOptions { get; set; }
     
     /// <summary>
     /// Набор обязательного текста в распознанном тексте перед поиском IMEI.
@@ -27,33 +25,5 @@ public class AppOptions
     /// <summary>
     /// Включенные обработчики распознавания текста.
     /// </summary>
-    public IReadOnlyCollection<RecognizeTextImageType> Recognizers { get; set; }
-}
-
-public class ImageSettings
-{
-    /// <summary>
-    /// Контрастность.
-    /// </summary>
-    public float Contrast { get; set; }
-    
-    /// <summary>
-    /// Резкость.
-    /// </summary>
-    public float Sharpness { get; set; }
-    
-    /// <summary>
-    /// Бинаризация.
-    /// </summary>
-    public float Binaryzation { get; set; }
-
-    /// <summary>
-    /// Гауссово размытие.
-    /// </summary>
-    public float GaussianBlur { get; set; }
-    
-    /// <summary>
-    /// DPI.
-    /// </summary>
-    public double ResizeDpi { get; set; }
+    public IReadOnlyCollection<RecognizerOptions> Recognizers { get; set; }
 }

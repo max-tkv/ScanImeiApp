@@ -1,20 +1,18 @@
-using ScanImeiApp.Models;
-
 namespace ScanImeiApp.Abstractions;
 
 /// <summary>
-/// Интерфейс представляет описание обработчика распознавания текста на картинки.
+/// Интерфейс представляет описание обработчика изменения изображения.
 /// </summary>
-public interface IRecognizeText
+public interface IModifierImage
 {
     /// <summary>
-    /// Выполнить распознавание текста. 
+    /// Выполнить изменение изображения. 
     /// </summary>
     /// <param name="memoryStreamImage">Изображение.</param>
     /// <param name="imageName">Имя изображения.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
-    /// <returns>Результат распознавания.</returns>
-    Task<RecognizeResult> RecognizeTextAsync(
+    /// <returns>Измененное изображение.</returns>
+    Task<MemoryStream> ModifyImageAsync(
         MemoryStream memoryStreamImage,
         string imageName,
         CancellationToken cancellationToken);

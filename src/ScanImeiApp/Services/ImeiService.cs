@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
 using ScanImeiApp.Abstractions;
-using ScanImeiApp.Lookups;
 using ScanImeiApp.Models;
 using ScanImeiApp.Options;
 
@@ -34,7 +33,7 @@ public class ImeiService : IImeiService
         LogResultRecognized(
             bestRecognizeResult.ImageName, 
             bestRecognizeResult.Text, 
-            bestRecognizeResult.RecognizeTextImageType,
+            bestRecognizeResult.RecognizerName,
             bestRecognizeResult.Confidence);
         
         string formatRecognizedText = FormatRecognizeText(bestRecognizeResult.Text);
@@ -66,7 +65,7 @@ public class ImeiService : IImeiService
             foreach (var requiredTextImeiItem in requiredTextImei)
             {
                 if (recognizeResult.Text.ToLower().Contains(requiredTextImeiItem.ToLower()) && 
-                    recognizeResultsWithRequiredTextImei.All(x => x.RecognizeTextImageType != recognizeResult.RecognizeTextImageType))
+                    recognizeResultsWithRequiredTextImei.All(x => x.RecognizerName != recognizeResult.RecognizerName))
                 {
                     recognizeResultsWithRequiredTextImei.Add(recognizeResult);
                 }   
@@ -89,16 +88,16 @@ public class ImeiService : IImeiService
     /// </summary>
     /// <param name="imageName">Имя изображения.</param>
     /// <param name="recognizedText">Распознанный текст.</param>
-    /// <param name="recognizeTextImageType">Тип изменения изображения.</param>
+    /// <param name="recognizerName">Имя модификаций изображения.</param>
     /// <param name="confidence">Уровень доверия к распознаванию OCR</param>
     private void LogResultRecognized(
         string imageName, 
         string recognizedText, 
-        RecognizeTextImageType recognizeTextImageType,
+        string recognizerName,
         float confidence)
     {
         _logger.LogInformation($"Имя изображения: {imageName}\n" +
-                               $"Лучший тип изменения: {recognizeTextImageType}. " +
+                               $"Лучший тип изменения: {recognizerName}. " +
                                $"Уровень доверия к распознаванию OCR - {confidence}.\n" +
                                $"Результат изъятия текста с изображения:\n{recognizedText}");
     }
