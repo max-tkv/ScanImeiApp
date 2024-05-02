@@ -8,6 +8,11 @@ public class AppOptions
     public bool AllowSavedImage { get; set; }
     
     /// <summary>
+    /// Включить валидацию IMEI алгоритмом Луна.
+    /// </summary>
+    public bool EnabledVariationLuhnAlgorithm { get; set; }
+    
+    /// <summary>
     /// Настройки изображения перед изъятием текста.
     /// </summary>
     public ImageOptions ImageOptions { get; set; }

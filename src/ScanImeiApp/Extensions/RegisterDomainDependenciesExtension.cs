@@ -10,6 +10,9 @@ using ScanImeiApp.Services.ModificationImage;
 
 namespace ScanImeiApp.Extensions;
 
+/// <summary>
+/// Класс с настройками для подключения доменного уровня приложения.
+/// </summary>
 public static class RegisterDomainDependenciesExtension
 {
     public static IServiceCollection RegisterDomain(
@@ -27,7 +30,8 @@ public static class RegisterDomainDependenciesExtension
             .AddScoped<IRegexService, RegexService>()
             .AddScoped<IImeiService, ImeiService>()
             .AddScoped<IRecognizerTextService, RecognizerTextService>()
-            .AddScoped<IModifierService, ModifierService>();
+            .AddScoped<IModifierService, ModifierService>()
+            .AddScoped<IImeiValidationService, ImeiValidationService>();
     }
 
     #region Приватные методы

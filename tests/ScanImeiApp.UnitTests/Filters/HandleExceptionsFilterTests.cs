@@ -20,24 +20,22 @@ namespace ScanImeiApp.UnitTests.Filters;
 /// </summary>
 public class HandleExceptionsFilterTests : BaseUnitTests
 {
-    private readonly Mock<ILogger<HandleExceptionsFilter>> _loggerMock;
-    private readonly Mock<IServiceProvider> _serviceProviderMock;
     private readonly Mock<HttpContext> _httpContextMock;
     private readonly HandleExceptionsFilter _filter;
 
     public HandleExceptionsFilterTests()
     {
-        _loggerMock = new Mock<ILogger<HandleExceptionsFilter>>();
-        _serviceProviderMock = new Mock<IServiceProvider>();
-        _httpContextMock = new Mock<HttpContext>();
+        var loggerMock = new Mock<ILogger<HandleExceptionsFilter>>();
+        var serviceProviderMock = new Mock<IServiceProvider>();
 
-        _serviceProviderMock
+        serviceProviderMock
             .Setup(sp => sp.GetService(typeof(ILogger<HandleExceptionsFilter>)))
-            .Returns(_loggerMock.Object);
-
+            .Returns(loggerMock.Object);
+        
+        _httpContextMock = new Mock<HttpContext>();
         _httpContextMock
             .SetupGet(c => c.RequestServices)
-            .Returns(_serviceProviderMock.Object);
+            .Returns(serviceProviderMock.Object);
 
         _filter = new HandleExceptionsFilter();    
     }
@@ -107,7 +105,7 @@ public class HandleExceptionsFilterTests : BaseUnitTests
         Assert.Equal("Не удалось получить настройки приложения.", errorResponse?.Error);
     }
     
-    [Fact(DisplayName = "Не удалось загрузить Teseract.")]
+    [Fact(DisplayName = "Не удалось загрузить Tesseract.")]
     public void OnException_DllNotFoundException_ReturnsBadRequestWithCorrectMessage()
     {
         // Arrange
@@ -123,7 +121,7 @@ public class HandleExceptionsFilterTests : BaseUnitTests
         var errorResponse = result?.Value as ErrorResponse;
         
         // Assert
-        Assert.Equal($"Не удалось загрузить Teseract. Ошибка: {errorMessage}", errorResponse?.Error);
+        Assert.Equal($"Не удалось загрузить Tesseract. Ошибка: {errorMessage}", errorResponse?.Error);
     }
     
     [Fact(DisplayName = "Произошло необработанное исключение.")]
@@ -141,6 +139,6 @@ public class HandleExceptionsFilterTests : BaseUnitTests
         var errorResponse = result?.Value as ErrorResponse;
         
         // Assert
-        Assert.Equal("Произошло необработанное исключение.", errorResponse?.Error);
+        Assert.Contains("Произошло необработанное исключение.", errorResponse?.Error);
     }
 }

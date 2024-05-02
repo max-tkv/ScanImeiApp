@@ -16,15 +16,18 @@ public class ImeiService : IImeiService
     private readonly ILogger<ImeiService> _logger;
     private readonly AppOptions _appOptions;
     private readonly IRegexService _regexService;
+    private readonly IImeiValidationService _imeiValidationService;
 
     public ImeiService(
         ILogger<ImeiService> logger, 
         AppOptions appOptions, 
-        IRegexService regexService)
+        IRegexService regexService,
+        IImeiValidationService imeiValidationService)
     {
         _logger = logger;
         _appOptions = appOptions;
         _regexService = regexService;
+        _imeiValidationService = imeiValidationService;
     }
     
     /// <inheritdoc />
@@ -63,18 +66,23 @@ public class ImeiService : IImeiService
                 favoriteRecognizeResultItem.Confidence);
         
             string formatRecognizedText = FormatRecognizeText(favoriteRecognizeResultItem.Text);
-            List<string> extractedImei = await _regexService.FindAndExtractedByPatternsAsync(
+            List<string> resultImei = await _regexService.FindAndExtractedByPatternsAsync(
                 formatRecognizedText, 
                 _appOptions.Patterns,
                 cancellationToken);
 
-            if (extractedImei.Any())
+            if (_appOptions.EnabledVariationLuhnAlgorithm)
+            {
+                resultImei = _imeiValidationService.FilterValidated(resultImei);   
+            }
+            
+            if (resultImei.Any())
             {
                 LogResultExtractedImei(
                     favoriteRecognizeResultItem.ImageName, 
-                    extractedImei);
+                    resultImei);
                 
-                return extractedImei.Distinct().ToList();
+                return resultImei.Distinct().ToList();
             }
         }
 

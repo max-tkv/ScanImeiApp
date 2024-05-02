@@ -45,7 +45,7 @@ public class RegexService : IRegexService
     }
 
     /// <summary>
-    /// Выполнить поиск парлелльно в нескольких потоках.
+    /// Выполнить поиск параллельно в нескольких потоках.
     /// </summary>
     /// <param name="recognizedText">Текст для анализа.</param>
     /// <param name="compiledRegexes">Предварительно скомпилированные регулярные выражения.</param>

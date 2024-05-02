@@ -1,7 +1,6 @@
-using AutoFixture;
 using Moq;
-using ScanImeiApp.Models;
-using ScanImeiApp.Tesseract;
+using ScanImeiApp.Tesseract.Abstractions;
+using ScanImeiApp.Tesseract.Services;
 using Tesseract;
 using Xunit;
 
@@ -10,38 +9,56 @@ namespace ScanImeiApp.UnitTests;
 /// <summary>
 /// Тесты для класса <see cref="TesseractService" />.
 /// </summary>
-public class TesseractServiceTests : BaseUnitTests, IDisposable
+public class TesseractServiceTests : BaseUnitTests
 {
-    private readonly Mock<TesseractEngine> _tesseractEngineMock;
+    private readonly Mock<ITesseractEngineAdapter> _mockEngineAdapter;
+    private readonly Mock<ITesseractPixService> _mockPixService;
     private readonly TesseractService _tesseractService;
-    private readonly Fixture _fixture;
+    private readonly Mock<ITesseractPageAdapter> _mockTesseractPage;
 
     public TesseractServiceTests()
     {
-        _tesseractEngineMock = new Mock<TesseractEngine>(
-            MockBehavior.Loose,
-            _fixture.Create<string>(),
-            _fixture.Create<string>(),
-            EngineMode.Default,
-            _fixture.Create<string>()); 
-        _tesseractService = new TesseractService(_tesseractEngineMock.Object);
-        _fixture = new Fixture();
+        _mockEngineAdapter = new Mock<ITesseractEngineAdapter>();
+        _mockPixService = new Mock<ITesseractPixService>();
+        _mockTesseractPage = new Mock<ITesseractPageAdapter>();
+        _tesseractService = new TesseractService(_mockEngineAdapter.Object, _mockPixService.Object);
     }
 
-    [Fact(DisplayName = "Recognize должен возвращать правильный RecognizeResult", 
-        Skip = "Не работает tesseract на моем MAC.")]
-    public void Recognize_ReturnsCorrectRecognizeResult()
+    [Fact(DisplayName = "Проверяет, что метод Recognize возвращает правильный результат.")]
+    public void Recognize_ShouldReturnRecognizeResult_WhenCalledWithValidMemoryStream()
     {
         // Arrange
-        var memoryStreamImage = _fixture.Create<MemoryStream>();
-        var expectedRecognizeResult = _fixture.Create<RecognizeResult>();
+        var memoryStreamImage = new MemoryStream();
+        var expectedText = "expected text";
+        var expectedConfidence = 0.85f;
+
+        _mockPixService.Setup(s => s.LoadFromMemory(memoryStreamImage)).Returns(It.IsAny<Pix>());
+        _mockEngineAdapter.Setup(e => e.Process(It.IsAny<Pix>(), PageSegMode.SingleColumn)).Returns(_mockTesseractPage.Object);
+        _mockTesseractPage.Setup(p => p.GetMeanConfidence()).Returns(expectedConfidence);
+        _mockTesseractPage.Setup(p => p.GetText()).Returns(expectedText);
 
         // Act
         var result = _tesseractService.Recognize(memoryStreamImage);
-    }
 
-    public void Dispose()
-    {
-        _tesseractService.Dispose();
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(expectedConfidence, result.Confidence);
+        Assert.Equal(expectedText, result.Text);
+        
+        _mockPixService
+            .Verify(service => service.LoadFromMemory(memoryStreamImage), 
+                Times.Once);
+        
+        _mockEngineAdapter
+            .Verify(service => service.Process(It.IsAny<Pix>(), PageSegMode.SingleColumn), 
+                Times.Once);
+        
+        _mockTesseractPage
+            .Verify(service => service.GetMeanConfidence(), 
+                Times.Once);
+        
+        _mockTesseractPage
+            .Verify(service => service.GetText(), 
+                Times.Once);
     }
 }

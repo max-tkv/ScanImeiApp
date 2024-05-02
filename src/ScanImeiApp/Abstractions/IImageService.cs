@@ -97,6 +97,6 @@ public interface IImageService
     Task<MemoryStream> ResizeAsync(
         MemoryStream originalImage,
         string imageName,
-        double ResizeDpi,
+        double resizeDpi,
         CancellationToken cancellationToken);
 }

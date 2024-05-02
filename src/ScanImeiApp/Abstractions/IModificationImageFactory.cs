@@ -3,7 +3,7 @@ using ScanImeiApp.Lookups;
 namespace ScanImeiApp.Abstractions;
 
 /// <summary>
-/// Интерфейс представляет описание фабрики обработчиков модификациий изображения.
+/// Интерфейс представляет описание фабрики обработчиков модификаций изображения.
 /// </summary>
 public interface IModificationImageFactory
 {

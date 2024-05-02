@@ -132,28 +132,27 @@ public class ImageService : IImageService
     public async Task<MemoryStream> ResizeAsync(
         MemoryStream originalImage, 
         string imageName,
-        double ResizeDpi,
+        double resizeDpi,
         CancellationToken cancellationToken)
     {
         using var image = Image.Load(originalImage.ToArray());
         
         double currentDpi = image.Metadata.HorizontalResolution;
         _logger.LogDebug($"{imageName}. Текущий DPI: {currentDpi}");
-        if (image.Metadata.HorizontalResolution > ResizeDpi || 
+        if (image.Metadata.HorizontalResolution > resizeDpi || 
             image.Metadata.HorizontalResolution <= 1)
         {
             return originalImage;
         }
-        double resizeRatio = ResizeDpi / currentDpi;
+        
+        double resizeRatio = resizeDpi / currentDpi;
         int targetWidth = (int)Math.Round(image.Width * resizeRatio); 
         int targetHeight = (int)Math.Round(image.Height * resizeRatio);
-        image.Metadata.HorizontalResolution = ResizeDpi;
-        image.Metadata.VerticalResolution = ResizeDpi;
+        image.Metadata.HorizontalResolution = resizeDpi;
+        image.Metadata.VerticalResolution = resizeDpi;
+        
         var resampler = new BicubicResampler();
-        var jpegEncoder = new JpegEncoder
-        {
-            Quality = 100
-        };
+        var jpegEncoder = new JpegEncoder { Quality = 100 };
         
         image.Mutate(x => x.Resize(targetWidth, targetHeight, resampler, false));
         

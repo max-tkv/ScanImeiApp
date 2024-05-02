@@ -1,8 +1,8 @@
-using System.Reflection;
-using Microsoft.OpenApi.Models;
 using ScanImeiApp.Extensions;
+using ScanImeiApp.Swagger;
 using ScanImeiApp.Tesseract;
 using ScanImeiApp.Tesseract.Extensions;
+using Serilog;
 
 public class Program
 {
@@ -13,35 +13,27 @@ public class Program
         {
             t.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(15);
         });
-
+        
         builder.Services.AddControllersWithViews();
         builder.Services.RegisterDomain(builder.Configuration);
         builder.Services.RegisterTesseract();
+        builder.Services.RegisterSwagger();
+        builder.Services.AddHealthChecks();
 
-        // Swagger
-        builder.Services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "ScanImeiApp.Web API", Version = "v1" });
-            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-            c.IncludeXmlComments(xmlPath);
-        });
-
+        builder.Host.UseSerilog((context, configuration) => 
+            configuration.ReadFrom.Configuration(context.Configuration));
+        
         var app = builder.Build();
-
+        
+        app.MapHealthChecks("/health");
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
             app.UseHsts();
         }
-
         app.UseHttpsRedirection();
         app.UseStaticFiles();
-
-        app.UseRouting();
-
-        app.UseAuthorization();
-
+        
         // Swagger
         app.UseSwagger();
         app.UseSwaggerUI(c =>
@@ -49,10 +41,13 @@ public class Program
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "ScanImeiApp.Web API V1");
         });
 
+        app.UseRouting();
+        app.UseAuthorization();
         app.MapDefaultControllerRoute();
-
+        app.UseSerilogRequestLogging();
+        
         TesseractLinuxLoaderFix.Patch();
-
+        
         app.Run();
     }
 }

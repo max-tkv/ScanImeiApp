@@ -1,4 +1,5 @@
 using AutoFixture;
+using AutoFixture.AutoMoq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -15,6 +16,7 @@ public class BaseUnitTests
     protected BaseUnitTests()
     {
         _fixture = new Fixture();
+        _fixture.Customize(new AutoMoqCustomization());
     }
     
     /// <summary>

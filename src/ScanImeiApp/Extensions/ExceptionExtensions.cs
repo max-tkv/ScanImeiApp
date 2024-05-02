@@ -3,15 +3,15 @@ using System.Text;
 namespace ScanImeiApp.Extensions;
 
 /// <summary>
-/// 
+/// Класс расширение для исключений.
 /// </summary>
 public static class ExceptionExtensions
 {
     /// <summary>
-    /// Получить расширеное и структрированное описание исключения.
+    /// Получить расширенное и структрированное описание исключения.
     /// </summary>
     /// <param name="ex">Исключения.</param>
-    /// <returns>Описание исключения</returns>
+    /// <returns>Описание исключения.</returns>
     public static string GetExceptionMessage(this Exception ex)
     {
         var exceptionsMessageChain = new StringBuilder(ex.Message);

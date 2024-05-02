@@ -75,7 +75,7 @@ public class ModifierService : IModifierService
         return await modifierImage.ModifyImageAsync(
             originalImage, 
             imageName, 
-            cancellationToken);;
+            cancellationToken);
     }
 
     #endregion

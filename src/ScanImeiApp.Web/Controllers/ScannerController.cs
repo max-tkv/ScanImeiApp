@@ -6,9 +6,12 @@ using ScanImeiApp.Contracts.Models;
 
 namespace ScanImeiApp.Web.Controllers;
 
+/// <summary>
+/// Контроллер методов API приложения.
+/// </summary>
 [HandleExceptionsFilter]
-[ApiController]
 [Route("api/[controller]")]
+[ApiController]
 public class ScannerController : ControllerBase
 {
     /// <summary>
@@ -18,7 +21,7 @@ public class ScannerController : ControllerBase
     /// <param name="images">Изображения.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Список найденных IMEI.</returns>
-    [HttpPost("/scan")]
+    [HttpPost("scan")]
     [ProducesResponseType(typeof(List<ImeiResponse>), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> ScanAsync(
@@ -51,9 +54,9 @@ public class ScannerController : ControllerBase
     /// </summary>
     /// <param name="scannerImeiService"></param>
     /// <param name="image">Изображение.</param>
-    /// <param name="cancellationToken"Токен отмены.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Список найденных IMEI.</returns>
-    [HttpPost("/scan/single")]
+    [HttpPost("scan/single")]
     [ProducesResponseType(typeof(ImeiResponse), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
     public async Task<IActionResult> ScanAsync(

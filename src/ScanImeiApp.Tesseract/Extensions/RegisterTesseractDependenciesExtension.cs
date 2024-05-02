@@ -1,8 +1,9 @@
 using System.Reflection;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using ScanImeiApp.Abstractions;
+using ScanImeiApp.Tesseract.Abstractions;
+using ScanImeiApp.Tesseract.Services;
 using Tesseract;
 
 namespace ScanImeiApp.Tesseract.Extensions;
@@ -27,17 +28,15 @@ public static class RegisterTesseractDependenciesExtension
         Guard.Against.Null(serviceCollection, nameof(serviceCollection));
 
         return serviceCollection
-            .AddScoped<ITesseractService, TesseractService>(
-                serviceProvider =>
-                {
-                    var logger = serviceProvider.GetRequiredService<ILogger<TesseractService>>();
-                    return new TesseractService(
-                        new TesseractEngine(
-                            GetTessdataDirectoryPath(logger),
-                            TesseractLanguageName,
-                            EngineMode.LstmOnly,
-                            GetConfigDirectoryPath(logger)));
-                });
+            .AddScoped<ITesseractService, TesseractService>()
+            .AddScoped<ITesseractPixService, TesseractPixService>()
+            .AddScoped<ITesseractEngineAdapter, TesseractEngineAdapter>(
+                _ => new TesseractEngineAdapter(
+                    new TesseractEngine(
+                        GetTessdataDirectoryPath(),
+                        TesseractLanguageName,
+                        EngineMode.LstmOnly,
+                        GetConfigDirectoryPath())));
     }
     
     #region Приватные методы
@@ -46,24 +45,20 @@ public static class RegisterTesseractDependenciesExtension
     /// Получить путь до каталога с tessdata.
     /// </summary>
     /// <returns>Путь.</returns>
-    private static string GetTessdataDirectoryPath(ILogger<TesseractService> logger)
+    private static string GetTessdataDirectoryPath()
     {
         string runDir = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!;
-        string tessdataDir = string.Concat(runDir, TesseractTessdataDirectory);
-        logger.LogDebug($"Каталога с tessdata: {tessdataDir}");
-        return tessdataDir;
+        return string.Concat(runDir, TesseractTessdataDirectory);
     }
     
     /// <summary>
     /// Получить путь до конфигурации с tessdata.
     /// </summary>
     /// <returns>Путь.</returns>
-    private static string GetConfigDirectoryPath(ILogger<TesseractService> logger)
+    private static string GetConfigDirectoryPath()
     {
         string runDir = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)!;
-        string tessdataDir = string.Concat(runDir, ConfigTessdataFilePath);
-        logger.LogDebug($"Каталога с config: {tessdataDir}");
-        return tessdataDir;
+        return string.Concat(runDir, ConfigTessdataFilePath);
     }
 
     #endregion
