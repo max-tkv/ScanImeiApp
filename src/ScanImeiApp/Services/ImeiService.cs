@@ -65,7 +65,10 @@ public class ImeiService : IImeiService
                 favoriteRecognizeResultItem.RecognizerName,
                 favoriteRecognizeResultItem.Confidence);
         
-            string formatRecognizedText = FormatRecognizeText(favoriteRecognizeResultItem.Text);
+            string formatRecognizedText = FormatRecognizeText(
+                favoriteRecognizeResultItem.ImageName,
+                favoriteRecognizeResultItem.RecognizerName,
+                favoriteRecognizeResultItem.Text);
             List<string> resultImei = await _regexService.FindAndExtractedByPatternsAsync(
                 formatRecognizedText, 
                 _appOptions.Patterns,
@@ -209,13 +212,20 @@ public class ImeiService : IImeiService
     /// <summary>
     /// Форматировать распознанный текст с изображения.
     /// </summary>
+    /// <param name="imageName">Имя изображения.</param>
+    /// <param name="recognizerName">Тип изменения.</param>
     /// <param name="recognizeText">Распознанный текст.</param>
     /// <returns>Форматированный распознанный текст.</returns>
-    private string FormatRecognizeText(string recognizeText)
+    private string FormatRecognizeText(string imageName, string recognizerName, string recognizeText)
     {
         string resultText = _regexService.RemoveAfterSlash(recognizeText);
         
         resultText = resultText
+            .Replace("IMEI ", "IMEI:")
+            .Replace("IMEI1 ", "IMEI:")
+            .Replace("IMEI2 ", "IMEI:")
+            .Replace("IMEI3 ", "IMEI:")
+            .Replace("IMEI4 ", "IMEI:")
             .Replace(" ", string.Empty)
             .Replace("\n", ":")
             .Trim();
@@ -224,6 +234,11 @@ public class ImeiService : IImeiService
             .ReplaceMultipleColons()
             .DeleteFirstColonsChar()
             .DeleteLastColonsChar();
+        
+        _logger.LogDebug($"Имя изображения: {imageName}\n" +
+                         $"Тип изменения: {recognizerName}\n" +
+                         $"После форматирования текста:\n" +
+                         $"{resultText}");
 
         return resultText;
     }
