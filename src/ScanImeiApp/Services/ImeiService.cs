@@ -221,7 +221,6 @@ public class ImeiService : IImeiService
         string resultText = _regexService.RemoveAfterSlash(recognizeText);
         
         resultText = resultText
-            .Replace("IMEI ", "IMEI:")
             .Replace("IMEI1 ", "IMEI:")
             .Replace("IMEI2 ", "IMEI:")
             .Replace("IMEI3 ", "IMEI:")
