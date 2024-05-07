@@ -192,7 +192,7 @@ public class ScannerImeiServiceTests : BaseUnitTests
     /// Создать опции распознавания.
     /// </summary>
     /// <returns>Опции распознавания.</returns>
-    private Collection<ModificationOptions> CreateOptionsRecognizers()
+    private Collection<ModificationOptions>? CreateOptionsRecognizers()
     {
         string[] names = Enum.GetNames(typeof(ModificationImageType));
         return new Collection<ModificationOptions>()

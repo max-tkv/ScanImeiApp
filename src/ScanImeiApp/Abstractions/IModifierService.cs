@@ -18,8 +18,8 @@ public interface IModifierService
     /// <returns>Измененное изображение.</returns>
     Task<MemoryStream> ApplyModifyImageAsync(
         MemoryStream originalImage,
-        string imageName, 
-        string recognizerName, 
+        string? imageName, 
+        string? recognizerName, 
         IReadOnlyCollection<ModificationImageType> recognizerModificationTypes, 
         CancellationToken cancellationToken);
 }

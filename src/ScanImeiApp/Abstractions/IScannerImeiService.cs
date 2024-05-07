@@ -14,6 +14,6 @@ public interface IScannerImeiService
     /// <returns>Список найденных IMEI.</returns>
     Task<List<string>> GetImeiTextFromImageAsync(
         MemoryStream originalImage, 
-        string imageName, 
+        string? imageName, 
         CancellationToken cancellationToken);
 }

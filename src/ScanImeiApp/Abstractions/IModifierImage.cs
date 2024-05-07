@@ -14,6 +14,6 @@ public interface IModifierImage
     /// <returns>Измененное изображение.</returns>
     Task<MemoryStream> ModifyImageAsync(
         MemoryStream memoryStreamImage,
-        string imageName,
+        string? imageName,
         CancellationToken cancellationToken);
 }

@@ -4,8 +4,17 @@ using ScanImeiApp.Tesseract;
 using ScanImeiApp.Tesseract.Extensions;
 using Serilog;
 
+namespace ScanImeiApp.Web;
+
+/// <summary>
+/// Основной класс старта приложения.
+/// </summary>
 public class Program
 {
+    /// <summary>
+    /// Основной метод старта приложения.
+    /// </summary>
+    /// <param name="args">Параметры.</param>
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);

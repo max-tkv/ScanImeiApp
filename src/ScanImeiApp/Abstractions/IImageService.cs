@@ -19,7 +19,7 @@ public interface IImageService
     /// <returns>Изображение.</returns>
     Task<MemoryStream> AdjustContrastAsync(
         MemoryStream originalImage, 
-        string imageName, 
+        string? imageName, 
         float contrast,
         CancellationToken cancellationToken);
 
@@ -33,7 +33,7 @@ public interface IImageService
     /// <returns>Изображение.</returns>
     Task<MemoryStream> AdjustSharpnessAsync(
         MemoryStream originalImage, 
-        string imageName, 
+        string? imageName, 
         float sharpness,
         CancellationToken cancellationToken);
 
@@ -47,7 +47,7 @@ public interface IImageService
     /// <returns>Изображение.</returns>
     Task<MemoryStream> BinaryzationAsync(
         MemoryStream originalImage, 
-        string imageName, 
+        string? imageName, 
         float threshold,
         CancellationToken cancellationToken);
 
@@ -82,7 +82,7 @@ public interface IImageService
     /// <returns></returns>
     Task<MemoryStream> GaussianBlurAsync(
         MemoryStream originalImage, 
-        string imageName,
+        string? imageName,
         float threshold,
         CancellationToken cancellationToken);
 
@@ -96,7 +96,7 @@ public interface IImageService
     /// <returns></returns>
     Task<MemoryStream> ResizeAsync(
         MemoryStream originalImage,
-        string imageName,
+        string? imageName,
         double resizeDpi,
         CancellationToken cancellationToken);
 }

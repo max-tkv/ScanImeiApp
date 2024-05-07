@@ -12,7 +12,7 @@ public class RegexService : IRegexService
     /// <inheritdoc />
     public async Task<List<string>> FindAndExtractedByPatternsAsync(
         string recognizedText, 
-        IReadOnlyCollection<string> patterns,
+        IReadOnlyCollection<string>? patterns,
         CancellationToken cancellationToken)
     { 
         List<Regex> compiledRegexes = CreateCompiledRegexes(patterns);
@@ -23,7 +23,7 @@ public class RegexService : IRegexService
     }
     
     /// <inheritdoc />
-    public string RemoveAfterSlash(string text) =>
+    public string RemoveAfterSlash(string? text) =>
         Regex.Replace(text, @"/.*$", "", RegexOptions.Multiline);
 
     #region Приватные методы
@@ -33,7 +33,7 @@ public class RegexService : IRegexService
     /// </summary>
     /// <param name="patterns">Шаблоны.</param>
     /// <returns>Предварительно скомпилированные регулярные выражения.</returns>
-    private static List<Regex> CreateCompiledRegexes(IReadOnlyCollection<string> patterns)
+    private static List<Regex> CreateCompiledRegexes(IReadOnlyCollection<string>? patterns)
     {
         var compiledRegexes = new List<Regex>();
         foreach (string pattern in patterns)

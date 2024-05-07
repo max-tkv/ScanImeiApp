@@ -26,7 +26,7 @@ public class ModifierImageBinaryzationTest : BaseUnitTests
         mockImageService.Setup(service => service.BinaryzationAsync(
                 memoryStreamImage, 
                 imageName, 
-                appOptions.ImageOptions.Binaryzation, 
+                appOptions.ImageOptions!.Binaryzation, 
                 cancellationToken))
             .ReturnsAsync(memoryStreamImage)
             .Verifiable("BinaryzationAsync was not called with the correct parameters.");

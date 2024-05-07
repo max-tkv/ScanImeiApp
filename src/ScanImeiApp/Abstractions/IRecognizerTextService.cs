@@ -16,6 +16,6 @@ public interface IRecognizerTextService
     /// <returns>Результат распознавания.</returns>
     public RecognizeResult RecognizeText(
         MemoryStream image,
-        string imageName,
-        string recognizerName);
+        string? imageName,
+        string? recognizerName);
 }

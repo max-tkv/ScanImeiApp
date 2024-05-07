@@ -22,8 +22,8 @@ public class ModifierService : IModifierService
     /// <inheritdoc />
     public async Task<MemoryStream> ApplyModifyImageAsync(
         MemoryStream originalImage,
-        string imageName, 
-        string recognizerName,
+        string? imageName, 
+        string? recognizerName,
         IReadOnlyCollection<ModificationImageType> recognizerModificationTypes, 
         CancellationToken cancellationToken)
     {
@@ -62,7 +62,7 @@ public class ModifierService : IModifierService
     /// <returns>Модифицированное изображение.</returns>
     private async Task<MemoryStream> ModifyImageAsync(
         MemoryStream originalImage, 
-        string imageName, 
+        string? imageName, 
         ModificationImageType modificationImageType,
         CancellationToken cancellationToken)
     {

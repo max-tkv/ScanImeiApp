@@ -121,7 +121,7 @@ public class ImeiService : IImeiService
     /// <returns>Отфильтрованный список результатов распознавания.</returns>
     private List<RecognizeResult> FilterRecognizeResultsWithRequiredTextImei(List<RecognizeResult> recognizeResults)
     {
-        IReadOnlyCollection<string> requiredTextImei = _appOptions.RequiredTextImei;
+        IReadOnlyCollection<string>? requiredTextImei = _appOptions.RequiredTextImei;
         var recognizeResultsWithRequiredTextImei = new List<RecognizeResult>();
         foreach (var recognizeResult in recognizeResults)
         {
@@ -170,7 +170,7 @@ public class ImeiService : IImeiService
     /// <param name="recognizeResultText">Текст для проверки.</param>
     /// <param name="lastIndexOf">С какого символа проверять.</param>
     /// <returns><b>True</b> - да, <b>False</b> - нет.</returns>
-    private static bool CheckCanFitImei(string recognizeResultText, int lastIndexOf) =>
+    private static bool CheckCanFitImei(string? recognizeResultText, int lastIndexOf) =>
         recognizeResultText.Length - lastIndexOf >= ImeiLength;
 
     /// <summary>
@@ -183,9 +183,9 @@ public class ImeiService : IImeiService
     /// <param name="confidence">Уровень доверия к распознаванию OCR</param>
     private void LogResultRecognized(
         int number, 
-        string imageName, 
-        string recognizedText, 
-        string recognizerName,
+        string? imageName, 
+        string? recognizedText, 
+        string? recognizerName,
         float confidence)
     {
         var recognizedResultText = string.IsNullOrWhiteSpace(recognizedText) ? "-" : recognizedText;
@@ -201,7 +201,7 @@ public class ImeiService : IImeiService
     /// <param name="imageName">Имя изобоажения.</param>
     /// <param name="extractedImei">Распознанные IMEI.</param>
     private void LogResultExtractedImei(
-        string imageName, 
+        string? imageName, 
         List<string> extractedImei)
     {
         _logger.LogInformation($"Имя изображения: {imageName}\n" +
@@ -216,7 +216,7 @@ public class ImeiService : IImeiService
     /// <param name="recognizerName">Тип изменения.</param>
     /// <param name="recognizeText">Распознанный текст.</param>
     /// <returns>Форматированный распознанный текст.</returns>
-    private string FormatRecognizeText(string imageName, string recognizerName, string recognizeText)
+    private string FormatRecognizeText(string? imageName, string? recognizerName, string? recognizeText)
     {
         string resultText = _regexService.RemoveAfterSlash(recognizeText);
         

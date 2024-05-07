@@ -27,7 +27,7 @@ public class ImageService : IImageService
     /// <inheritdoc />
     public async Task<MemoryStream> AdjustContrastAsync(
         MemoryStream originalImage, 
-        string imageName, 
+        string? imageName, 
         float contrast,
         CancellationToken cancellationToken)
     {
@@ -46,7 +46,7 @@ public class ImageService : IImageService
     /// <inheritdoc />
     public async Task<MemoryStream> AdjustSharpnessAsync(
         MemoryStream originalImage, 
-        string imageName, 
+        string? imageName, 
         float sharpness,
         CancellationToken cancellationToken)
     {
@@ -65,7 +65,7 @@ public class ImageService : IImageService
     /// <inheritdoc />
     public async Task<MemoryStream> BinaryzationAsync(
         MemoryStream originalImage, 
-        string imageName, 
+        string? imageName, 
         float threshold,
         CancellationToken cancellationToken)
     {
@@ -112,7 +112,7 @@ public class ImageService : IImageService
     /// <inheritdoc />
     public async Task<MemoryStream> GaussianBlurAsync(
         MemoryStream originalImage, 
-        string imageName,
+        string? imageName,
         float threshold,
         CancellationToken cancellationToken)
     {
@@ -131,7 +131,7 @@ public class ImageService : IImageService
     /// <inheritdoc />
     public async Task<MemoryStream> ResizeAsync(
         MemoryStream originalImage, 
-        string imageName,
+        string? imageName,
         double resizeDpi,
         CancellationToken cancellationToken)
     {
