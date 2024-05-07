@@ -14,7 +14,7 @@ public interface IRegexService
     /// <returns>Найденные строки.</returns>
     Task<List<string>> FindAndExtractedByPatternsAsync(
         string recognizedText, 
-        IReadOnlyCollection<string> patterns,
+        IReadOnlyCollection<string>? patterns,
         CancellationToken cancellationToken);
 
     /// <summary>
@@ -22,5 +22,5 @@ public interface IRegexService
     /// </summary>
     /// <param name="text">Тескт.</param>
     /// <returns>Результат.</returns>
-    string RemoveAfterSlash(string text);
+    string RemoveAfterSlash(string? text);
 }

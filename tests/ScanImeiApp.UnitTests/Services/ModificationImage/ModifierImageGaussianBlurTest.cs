@@ -26,7 +26,7 @@ public class ModifierImageGaussianBlurTest : BaseUnitTests
         mockImageService.Setup(service => service.GaussianBlurAsync(
                 memoryStreamImage, 
                 imageName, 
-                appOptions.ImageOptions.GaussianBlur, 
+                appOptions.ImageOptions!.GaussianBlur, 
                 cancellationToken))
             .ReturnsAsync(memoryStreamImage)
             .Verifiable("GaussianBlurAsync was not called with the correct parameters.");

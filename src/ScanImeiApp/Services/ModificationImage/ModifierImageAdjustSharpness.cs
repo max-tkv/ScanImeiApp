@@ -22,7 +22,7 @@ public class ModifierImageAdjustSharpness : IModifierImage
     /// <inheritdoc />
     public async Task<MemoryStream> ModifyImageAsync(
         MemoryStream memoryStreamImage, 
-        string imageName, 
+        string? imageName, 
         CancellationToken cancellationToken)
     {
         return await _imageService.AdjustSharpnessAsync(

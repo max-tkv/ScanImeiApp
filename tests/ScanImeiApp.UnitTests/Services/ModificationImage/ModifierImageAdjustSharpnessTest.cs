@@ -26,7 +26,7 @@ public class ModifierImageAdjustSharpnessTest : BaseUnitTests
         mockImageService.Setup(service => service.AdjustSharpnessAsync(
                 memoryStreamImage, 
                 imageName, 
-                appOptions.ImageOptions.Sharpness, 
+                appOptions.ImageOptions!.Sharpness, 
                 cancellationToken))
             .ReturnsAsync(memoryStreamImage)
             .Verifiable("AdjustSharpnessAsync was not called with the correct parameters.");

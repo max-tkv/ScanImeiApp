@@ -8,12 +8,12 @@ public class RecognizeResult
     /// <summary>
     /// Имя изображения.
     /// </summary>
-    public string ImageName { get; set; }
+    public string? ImageName { get; set; }
     
     /// <summary>
     /// Распознанный текст.
     /// </summary>
-    public string Text { get; set; }
+    public string? Text { get; set; }
     
     /// <summary>
     /// Уровень доверия к распознаванию от OCR.
@@ -23,5 +23,5 @@ public class RecognizeResult
     /// <summary>
     /// Имя распознавателя.
     /// </summary>
-    public string RecognizerName { get; set; }
+    public string? RecognizerName { get; set; }
 }

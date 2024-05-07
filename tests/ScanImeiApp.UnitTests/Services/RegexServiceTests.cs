@@ -8,7 +8,7 @@ namespace ScanImeiApp.UnitTests.Services;
 /// </summary>
 public class RegexServiceTests : BaseUnitTests
 {
-    private string[] patterns =
+    private string[]? patterns =
     {
         "IMEI(\\d{15})(\\d{15})?", // IMEI000000000000000 or IMEI000000000000000111111111111111
         "IMEI(\\d{15}):?(\\d{15})?", // IMEI000000000000000 or IMEI000000000000000:111111111111111
@@ -168,7 +168,7 @@ public class RegexServiceTests : BaseUnitTests
     [Theory(DisplayName = "Проверяет удаление слеша(/) и все после него в одной строке.")]
     [InlineData("example/text", "example")]
     [InlineData("example/text\nexample2/text2\nexample3/text3\n", "example\nexample2\nexample3\n")]
-    public void RemoveAfterSlash_RemovesTextAfterSlash(string text, string expected)
+    public void RemoveAfterSlash_RemovesTextAfterSlash(string? text, string expected)
     {
         // Arrange
         var regexService = new RegexService();

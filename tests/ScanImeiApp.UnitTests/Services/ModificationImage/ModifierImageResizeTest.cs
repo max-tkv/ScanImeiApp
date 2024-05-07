@@ -26,7 +26,7 @@ public class ModifierImageResizeTest : BaseUnitTests
         mockImageService.Setup(service => service.ResizeAsync(
                 memoryStreamImage, 
                 imageName, 
-                appOptions.ImageOptions.ResizeDpi, 
+                appOptions.ImageOptions!.ResizeDpi, 
                 cancellationToken))
             .ReturnsAsync(memoryStreamImage)
             .Verifiable("ResizeAsync was not called with the correct parameters.");

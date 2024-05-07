@@ -10,7 +10,7 @@ public class ModificationOptions
     /// <summary>
     /// Имя модификаций изображения.
     /// </summary>
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
     /// Список модификаций.

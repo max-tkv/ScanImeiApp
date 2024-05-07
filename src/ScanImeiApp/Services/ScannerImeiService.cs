@@ -38,7 +38,7 @@ public class ScannerImeiService : IScannerImeiService
     /// <inheritdoc />
     public async Task<List<string>> GetImeiTextFromImageAsync(
         MemoryStream originalImage, 
-        string imageName, 
+        string? imageName, 
         CancellationToken cancellationToken)
     {
         await _imageService.SaveImageAsync(
@@ -65,7 +65,7 @@ public class ScannerImeiService : IScannerImeiService
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Список IMEI.</returns>
     private async Task<List<string>> GetRecognizedImeiByOptionsAsync(
-        string imageName, 
+        string? imageName, 
         MemoryStream image,
         CancellationToken cancellationToken)
     {
@@ -95,7 +95,7 @@ public class ScannerImeiService : IScannerImeiService
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Результат распознавания.</returns>
     private async Task<RecognizeResult> ApplyModifyImageAndRecognizeTextAsync(
-        string imageName, 
+        string? imageName, 
         MemoryStream image,
         ModificationOptions modification, 
         CancellationToken cancellationToken)

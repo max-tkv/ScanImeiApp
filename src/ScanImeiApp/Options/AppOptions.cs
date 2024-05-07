@@ -15,20 +15,20 @@ public class AppOptions
     /// <summary>
     /// Настройки изображения перед изъятием текста.
     /// </summary>
-    public ImageOptions ImageOptions { get; set; }
+    public ImageOptions? ImageOptions { get; set; }
     
     /// <summary>
     /// Набор обязательного текста в распознанном тексте перед поиском IMEI.
     /// </summary>
-    public IReadOnlyCollection<string> RequiredTextImei { get; set; }
+    public IReadOnlyCollection<string>? RequiredTextImei { get; set; }
     
     /// <summary>
     /// Паттерны регулярных выражений для поиска IMEI.
     /// </summary>
-    public IReadOnlyCollection<string> Patterns { get; set; }
+    public IReadOnlyCollection<string>? Patterns { get; set; }
     
     /// <summary>
     /// Включенные параметры изменения изображения перед распознаванием текста.
     /// </summary>
-    public IReadOnlyCollection<ModificationOptions> Modifications { get; set; }
+    public IReadOnlyCollection<ModificationOptions>? Modifications { get; set; }
 }

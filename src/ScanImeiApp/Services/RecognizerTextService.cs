@@ -23,8 +23,8 @@ public class RecognizerTextService : IRecognizerTextService
     /// <inheritdoc />
     public RecognizeResult RecognizeText(
         MemoryStream image,
-        string imageName,
-        string recognizerName)
+        string? imageName,
+        string? recognizerName)
     {
         RecognizeResult recognizedResult = RecognizedTextFromImage(image);
         recognizedResult.RecognizerName = recognizerName;

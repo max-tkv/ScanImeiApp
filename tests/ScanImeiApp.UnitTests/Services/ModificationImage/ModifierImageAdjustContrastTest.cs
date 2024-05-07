@@ -26,7 +26,7 @@ public class ModifierImageAdjustContrastTest : BaseUnitTests
         mockImageService.Setup(service => service.AdjustContrastAsync(
                 memoryStreamImage, 
                 imageName, 
-                appOptions.ImageOptions.Contrast, 
+                appOptions.ImageOptions!.Contrast, 
                 cancellationToken))
             .ReturnsAsync(memoryStreamImage)
             .Verifiable("AdjustContrastAsync was not called with the correct parameters.");
