@@ -23,7 +23,7 @@ public class AppOptions
     public IReadOnlyCollection<string> RequiredTextImei { get; set; }
     
     /// <summary>
-    /// Паттерны поиска IMEI.
+    /// Паттерны регулярных выражений для поиска IMEI.
     /// </summary>
     public IReadOnlyCollection<string> Patterns { get; set; }
     
