@@ -28,7 +28,7 @@ public class AppOptions
     public IReadOnlyCollection<string> Patterns { get; set; }
     
     /// <summary>
-    /// Включенные обработчики распознавания текста.
+    /// Включенные параметры изменения изображения перед распознаванием текста.
     /// </summary>
-    public IReadOnlyCollection<RecognizerOptions> Recognizers { get; set; }
+    public IReadOnlyCollection<ModificationOptions> Modifications { get; set; }
 }
