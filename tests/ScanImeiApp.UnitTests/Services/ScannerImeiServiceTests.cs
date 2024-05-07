@@ -68,7 +68,7 @@ public class ScannerImeiServiceTests : BaseUnitTests
                 It.IsAny<List<RecognizeResult>>(), 
                 cancellationToken))
             .ReturnsAsync(expectedImeiList);
-        _appOptions.Recognizers = CreateOptionsRecognizers();
+        _appOptions.Modifications = CreateOptionsRecognizers();
 
         // Act
         var result = await _scannerImeiService.GetImeiTextFromImageAsync(
@@ -143,7 +143,7 @@ public class ScannerImeiServiceTests : BaseUnitTests
                     It.IsAny<IReadOnlyCollection<ModificationImageType>>(),
                     cancellationToken))
             .Throws<Exception>();
-        _appOptions.Recognizers = CreateOptionsRecognizers();
+        _appOptions.Modifications = CreateOptionsRecognizers();
 
         // Act
         var result = await _scannerImeiService.GetImeiTextFromImageAsync(
@@ -192,10 +192,10 @@ public class ScannerImeiServiceTests : BaseUnitTests
     /// Создать опции распознавания.
     /// </summary>
     /// <returns>Опции распознавания.</returns>
-    private Collection<RecognizerOptions> CreateOptionsRecognizers()
+    private Collection<ModificationOptions> CreateOptionsRecognizers()
     {
         string[] names = Enum.GetNames(typeof(ModificationImageType));
-        return new Collection<RecognizerOptions>()
+        return new Collection<ModificationOptions>()
         {
             new()
             {

@@ -5,7 +5,7 @@ namespace ScanImeiApp.Options;
 /// <summary>
 /// Модель параметров изменений изображения перед распознаванием текста.
 /// </summary>
-public class RecognizerOptions
+public class ModificationOptions
 {
     /// <summary>
     /// Имя модификаций изображения.

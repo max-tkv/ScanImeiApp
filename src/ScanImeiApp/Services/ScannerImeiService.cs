@@ -60,7 +60,7 @@ public class ScannerImeiService : IScannerImeiService
     /// <summary>
     /// Получить IMEI по параметрам из настрояк приложения.
     /// </summary>
-    /// <param name="imageName">Имя приложения.</param>
+    /// <param name="imageName">Имя изображения.</param>
     /// <param name="image">Изображения.</param>
     /// <param name="cancellationToken">Токен отмены.</param>
     /// <returns>Список IMEI.</returns>
@@ -69,37 +69,60 @@ public class ScannerImeiService : IScannerImeiService
         MemoryStream image,
         CancellationToken cancellationToken)
     {
-        var resultAll = new List<RecognizeResult>();
-        IEnumerable<RecognizerOptions> recognizers = _appOptions.Recognizers.Distinct();
-        foreach (var recognizer in recognizers)
+        var recognizeResults = new List<RecognizeResult>();
+        IEnumerable<ModificationOptions> modifications = _appOptions.Modifications.Distinct();
+        foreach (var recognizer in modifications)
         {
-            try
-            {
-                MemoryStream modifyImage = await _modifierService.ApplyModifyImageAsync(
-                    image,
-                    imageName, 
-                    recognizer.Name,
-                    recognizer.ModificationTypes, 
-                    cancellationToken);
-                RecognizeResult recognizeResult = _recognizerTextService.RecognizeText(
-                    modifyImage, 
-                    imageName, 
-                    recognizer.Name);
-                resultAll.Add(recognizeResult);
-            }
-            catch (Exception e)
-            {
-                _logger.LogWarning($"Имя изображения: {imageName}\n" +
-                                   $"Тип изменения: {recognizer.Name}.\n" +
-                                   $"Ошибка при обработки измененного изображения.\n" +
-                                   $"Описание: {e.GetExceptionMessage()}");
-            }
+            var recognizeResult = await ApplyModifyImageAndRecognizeTextAsync(
+                imageName, 
+                image, 
+                recognizer, 
+                cancellationToken);
+            recognizeResults.Add(recognizeResult);
         }
         
         return await _imeiService.FindImeiToRecognizeResultsAsync(
-            resultAll, 
+            recognizeResults, 
             cancellationToken);;
     }
-    
+
+    /// <summary>
+    /// Выполнить модификацию изображения и извлечение текста.
+    /// </summary>
+    /// <param name="imageName">Имя изображения.</param>
+    /// <param name="image">Изображение.</param>
+    /// <param name="modification">Модификатор изображения.</param>
+    /// <param name="cancellationToken">Токен отмены.</param>
+    /// <returns>Результат распознавания.</returns>
+    private async Task<RecognizeResult> ApplyModifyImageAndRecognizeTextAsync(
+        string imageName, 
+        MemoryStream image,
+        ModificationOptions modification, 
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            MemoryStream modifyImage = await _modifierService.ApplyModifyImageAsync(
+                image,
+                imageName, 
+                modification.Name,
+                modification.ModificationTypes, 
+                cancellationToken);
+            return _recognizerTextService.RecognizeText(
+                modifyImage, 
+                imageName, 
+                modification.Name);
+        }
+        catch (Exception e)
+        {
+            _logger.LogWarning($"Имя изображения: {imageName}\n" +
+                               $"Тип изменения: {modification.Name}.\n" +
+                               $"Ошибка при изменении или обработки измененного изображения.\n" +
+                               $"Описание: {e.GetExceptionMessage()}");
+        }
+
+        return null!;
+    }
+
     #endregion
 }
